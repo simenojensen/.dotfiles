@@ -17,6 +17,13 @@ source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 # z rupa
 . /usr/local/etc/profile.d/z.sh
 
+# Ruby
+export PATH="/usr/local/opt/ruby/bin:$PATH"
+
+# Colorls
+PATH=$PATH:$(ruby -e 'puts Gem.bindir')
+source $(dirname $(gem which colorls))/tab_complete.sh
+
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('/usr/local/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
