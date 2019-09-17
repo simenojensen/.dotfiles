@@ -1,0 +1,7 @@
+[user]
+	name = simenojensen
+	email = simen@omholt-jensen.com
+[credential]
+	helper = osxkeychain
+[core]
+	excludesfile = /Users/simenojensen/.gitignore
