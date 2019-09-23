@@ -30,7 +30,6 @@
 
 (setq inhibit-startup-message t) ;; hide the startup message
 (load-theme 'material t) ;; load material theme
-(global-linum-mode t) ;; enable line numbers globally
 
 ;; PYTHON CONFIGURATION
 ;; --------------------------------------

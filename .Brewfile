@@ -47,6 +47,7 @@ cask "spectacle"
 cask "spotify"
 cask "the-unarchiver"
 cask "transmission"
+cask "twitch"
 cask "vlc"
 cask "xquartz"
 mas "Xcode", id: 497799835

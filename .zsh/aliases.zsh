@@ -1,12 +1,24 @@
 # Manage dotfiles with git bare repository
 alias dotfiles="git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
 
+# Easier navigation: .., ..., ...., ....., ~ and -
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias dl="cd ~/Downloads"
+alias dt="cd ~/Desktop"
+
 # Colorls
 alias la="colorls --almost-all --long --group-directories-first"
-
-# update
-alias update="sudo softwareupdate -ia; brew update; brew cask upgrade; brew cleanup; conda deactivate; conda update conda --yes; conda update --all --yes; conda activate py3; conda update --all --yes; conda clean --all --yes; brew bundle dump --global --force"
+alias ls="colorls -1 --group-directories-first"
 
 # emacs
 alias emacs="emacs -nw"
+
+# Reload the shell (i.e. invoke as a login shell)
+alias reload="exec ${SHELL} -l"
+
+# Print each PATH entry on a separate line
+alias path='echo -e ${PATH//:/\\n}'
 
