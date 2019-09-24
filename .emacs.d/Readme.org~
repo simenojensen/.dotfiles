@@ -1,0 +1,14 @@
+
+* Lesson 1
+  Introducing the series and setting up the package manager
+  - Show melpa
+  - Setup melpa
+  - Installed use-package
+  - Installed try
+  - intalled which-key
+* Lesson 2
+  Show some org-mode
+  - review init.el
+  - setup Readme.org
+* Links
+  - [[http://cestlaz.github.io/][Here's my blog]]
