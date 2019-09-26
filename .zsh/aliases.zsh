@@ -14,7 +14,7 @@ alias la="colorls --almost-all --long --group-directories-first"
 alias ls="colorls -1 --group-directories-first"
 
 # emacs
-alias emacs="emacs -nw"
+# alias emacs="emacs -nw"
 
 # Reload the shell (i.e. invoke as a login shell)
 alias reload="exec ${SHELL} -l"
