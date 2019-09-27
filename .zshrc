@@ -68,13 +68,12 @@ ZSH_CUSTOM="/Users/simenojensen/.zsh"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git
-	)
+plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
-
 source $ZSH_CUSTOM/aliases.zsh
 source $ZSH_CUSTOM/exports.zsh
 source $ZSH_CUSTOM/functions.zsh
+
