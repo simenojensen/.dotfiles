@@ -25,9 +25,7 @@ conda config --append channels spyder-ide
 conda install spyder --yes
 
 # mac settings
-cd ~/.install.dotfiles/macOS_settings
-./macOS_settings
-
+./.macos
 
 
 
