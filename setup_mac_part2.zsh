@@ -24,3 +24,8 @@ conda config --append channels anaconda
 conda config --append channels spyder-ide
 conda install spyder --yes
 
+# mac settings
+./.macos
+
+
+
