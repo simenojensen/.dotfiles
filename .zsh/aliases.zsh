@@ -9,12 +9,8 @@ alias .....="cd ../../../.."
 alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
 
-# Colorls
-alias la="colorls --almost-all --long --group-directories-first"
-alias ls="colorls -1 --group-directories-first"
-
 # emacs
-# alias emacs="emacs -nw"
+alias emacs="emacs -nw"
 
 # Reload the shell (i.e. invoke as a login shell)
 alias reload="exec ${SHELL} -l"
@@ -22,3 +18,5 @@ alias reload="exec ${SHELL} -l"
 # Print each PATH entry on a separate line
 alias path='echo -e ${PATH//:/\\n}'
 
+# Lock the screen (when going AFK)
+alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
