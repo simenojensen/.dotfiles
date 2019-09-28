@@ -10,7 +10,7 @@ alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
 
 # emacs
-alias emacs="emacs -nw"
+#alias emacs="emacs -nw"
 
 # Reload the shell (i.e. invoke as a login shell)
 alias reload="exec ${SHELL} -l"

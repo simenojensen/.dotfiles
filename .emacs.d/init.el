@@ -1,5 +1,4 @@
 (setq inhibit-startup-message t)
-(tool-bar-mode -1)
 (setq backup-directory-alist `(("." . "~/.emacs.saves")))
 
 
