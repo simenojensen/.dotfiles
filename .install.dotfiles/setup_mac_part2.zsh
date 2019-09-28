@@ -15,7 +15,7 @@ dotfiles config --local status.showUntrackedFiles no
 dotfiles pull
 
 # Download homebrew packages
-brew bundle --global --force
+brew bundle --global --force --verbose
 
 # conda
 conda create -n py3
