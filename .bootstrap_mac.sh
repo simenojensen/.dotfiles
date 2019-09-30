@@ -34,10 +34,9 @@ start_sudo
 ###
 
 # Setup dotfiles bare repository
-alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
 git clone --bare https://www.github.com/simenojensen/.dotfiles.git $HOME/.dotfiles.git
-dotfiles checkout
-dotfiles config --local status.showUntrackedFiles no
+git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME checkout
+git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME config --local status.showUntrackedFiles no
 
 # Check for Homebrew and install if we don't have it
 if test ! $(which brew); then
