@@ -51,9 +51,9 @@ brew bundle --global --verbose
 
 # Setup conda
 conda create -n py3 --yes
-conda config --append channels conda-forge
-conda config --append channels anaconda
-conda config --append channels spyder-ide
+conda config --prepend channels conda-forge
+conda config --prepend channels anaconda
+conda config --prepend channels spyder-ide
 conda activate py3
 conda install spyder --yes
 

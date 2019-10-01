@@ -1,5 +1,5 @@
 channels:
+  - spyder-ide
   - defaults
   - conda-forge
   - anaconda
-  - spyder-ide
