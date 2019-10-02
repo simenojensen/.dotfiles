@@ -5,6 +5,9 @@ else
   export EDITOR='emacs'
 fi
 
+# coreutils
+export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+
 # zsh-syntax-highlighting
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
