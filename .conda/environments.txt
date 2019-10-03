@@ -1,3 +1,4 @@
 /usr/local/Caskroom/miniconda/base
 /usr/local/Caskroom/miniconda/base/envs/py3
 /usr/local/Caskroom/miniconda/base/envs/py2
+/usr/local/Caskroom/miniconda/base/envs/tensorflow
