@@ -1,3 +1,4 @@
+#+STARTUP: showall hidestars
 
 * Lesson 1
 ** Part 1
