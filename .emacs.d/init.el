@@ -18,13 +18,15 @@
   :ensure t
   :config (which-key-mode))
 
+(defalias 'list-buffers 'ibuffer-other-window)
+
+(windmove-default-keybindings)
+
 ;; Org-mode stuff
 (use-package org-bullets
   :ensure t
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
-
 
 ;; Automatically added stuff
 (custom-set-variables

@@ -2,6 +2,7 @@
 function update() {
     sudo softwareupdate -ia
     brew update
+    brew upgrade
     brew cask upgrade
     brew cleanup
     conda deactivate
