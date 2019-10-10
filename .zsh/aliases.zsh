@@ -10,7 +10,7 @@ alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
 
 # Listing
-alias la='ls -aFlh --group-directories-first --color=auto'
+alias la='ls -aFlh --almost-all --group-directories-first --color=auto'
 
 # emacs
 #alias emacs="emacs -nw"
