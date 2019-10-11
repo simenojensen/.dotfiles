@@ -25,3 +25,7 @@ source /usr/local/share/zsh-history-substring-search/zsh-history-substring-searc
 
 # openVPN
 export PATH="/usr/local/opt/openvpn/sbin:$PATH"
+
+# gnu-sed
+PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
+
