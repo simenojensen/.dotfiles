@@ -8,6 +8,7 @@ alias ....="cd ../../.."
 alias .....="cd ../../../.."
 alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
+alias cl="clear"
 
 # Listing
 alias la='ls -aFlh --almost-all --group-directories-first --color=auto'
