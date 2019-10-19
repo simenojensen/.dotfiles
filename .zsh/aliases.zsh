@@ -13,6 +13,9 @@ alias cl="clear"
 # Listing
 alias la='ls -aFlh --almost-all --group-directories-first --color=auto'
 
+# cat
+alias cat="ccat --bg=dark"
+
 # emacs
 #alias emacs="emacs -nw"
 
@@ -27,3 +30,5 @@ alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resource
 
 # stop ping after 10 sends
 alias ping='ping -c 10'
+
+# ccat to pdf

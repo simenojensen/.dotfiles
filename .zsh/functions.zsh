@@ -27,5 +27,10 @@ function update() {
     condaupdate
 }
 
+function cat2pdf(){
+    ccat --html --bg=dark $1 > tmp.html
+    wkhtmltopdf tmp.html $1".pdf"
+    rm tmp.html
+}
 
 
