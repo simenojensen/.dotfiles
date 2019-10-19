@@ -1,17 +1,30 @@
 # update macOS, homebrew, conda
-function update() {
+
+function macupdate() {
     sudo softwareupdate -ia
+}
+
+function brewupdate() {
     brew update
     brew upgrade
     brew cask upgrade
     brew cleanup
+    brew bundle dump --global --force
+}
+
+function condaupdate() {
     conda deactivate
     conda update conda --yes
     conda update --all --yes
     conda activate py3
     conda update --all --yes
     conda clean --all --yes
-    brew bundle dump --global --force
+}    
+
+function update() {
+    macupdate
+    brewupdate
+    condaupdate
 }
 
 
