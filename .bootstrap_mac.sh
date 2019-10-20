@@ -28,10 +28,7 @@ stop_sudo() {
 }
 
 echo "Starting Bootstrap..."
-
-###
 start_sudo
-###
 
 # Setup dotfiles bare repository
 git clone --bare https://www.github.com/simenojensen/.dotfiles.git $HOME/.dotfiles.git
