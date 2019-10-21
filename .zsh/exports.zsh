@@ -48,6 +48,12 @@ export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 # export LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"
 # export CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"
 
+# sqlite
+export PATH="/usr/local/opt/sqlite/bin:$PATH"
+# export LDFLAGS="-L/usr/local/opt/sqlite/lib"
+# export CPPFLAGS="-I/usr/local/opt/sqlite/include"
+
+
 # gnu-sed
 export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 
