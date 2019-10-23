@@ -33,5 +33,7 @@ function cat2pdf(){
     rm tmp.html
 }
 
-    
+function sortcat(){
+    grep . $1 | sort
+}
 

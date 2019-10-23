@@ -35,5 +35,3 @@ alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resource
 
 # stop ping after 10 sends
 alias ping='ping -c 10'
-
-# ccat to pdf
