@@ -22,6 +22,7 @@ function condaupdate() {
 }    
 
 function update() {
+    dpull
     macupdate
     brewupdate
     condaupdate
