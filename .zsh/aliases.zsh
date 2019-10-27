@@ -25,7 +25,7 @@ alias cat="ccat --bg=dark"
 #alias emacs="emacs -nw"
 
 # Reload the shell (i.e. invoke as a login shell)
-alias reload="exec ${SHELL} -l"
+alias reload="source ~/.zshrc"
 
 # Print each PATH entry on a separate line
 alias path='echo -e ${PATH//:/\\n}'
