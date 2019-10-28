@@ -22,6 +22,7 @@ conda activate py3
 # <<< conda initialize <<<
 
 
+
 # ncurses
 # export PATH="/usr/local/opt/ncurses/bin:$PATH"
 # export LDFLAGS="-L/usr/local/opt/ncurses/lib"
