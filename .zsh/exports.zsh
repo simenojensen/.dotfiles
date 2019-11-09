@@ -101,3 +101,5 @@ source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # openVPN
 export PATH="/usr/local/opt/openvpn/sbin:$PATH"
+
+

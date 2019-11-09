@@ -1,0 +1,28 @@
+((("undo-tree-visualizer-default-face" .
+   [0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("yas-global-mode" .
+   [0 0 0 0 0 0 0 0 0 0 0 0 0 0 1])
+  ("progn" .
+   [1 0 0 0 0])
+  ("yasnippet" .
+   [1 0 0 0 0 0 0 0 0])
+  ("YASnippet" .
+   [0 0 0 0 0 0 0 0 1])
+  (":init" .
+   [4 0 0 0 0])
+  (":ensure" .
+   [4 0 0 0 0 0 0])
+  ("flycheck-info" .
+   [0 0 0 0 0 0 0 0 1 0 0 0 0])
+  ("use-package" .
+   [1 0 0 0 1 0 0 0 0 0 2])
+  ("expand-file-name" .
+   [0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0])
+  ("org-babel-load-file" .
+   [0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0])
+  ("add-hook" .
+   [0 0 0 0 0 0 0 2])
+  ("python-mode-hook" .
+   [2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("ipaddress" .
+   [0 0 1 0 0 0 0 0 0])))

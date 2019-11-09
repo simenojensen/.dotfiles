@@ -54,7 +54,6 @@ conda config --prepend channels spyder-ide
 conda activate py3
 conda install spyder --yes
 
-
 # Clone oh my zsh
 git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
 
