@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title></title>
+<meta name="author" content="(Simen Omholt-Jensen)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="../reveal.js/css/reveal.css"/>
+
+<link rel="stylesheet" href="../reveal.js/css/theme/sky.css" id="theme"/>
+
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = '../reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h2 class="author">Simen Omholt-Jensen</h2><p class="date">Created: 2019-11-10 Sun 08:04</p>
+</section>
+
+<section>
+<section id="slide-orgf4e4afa">
+<h2 id="orgf4e4afa">Slide 1</h2>
+</section>
+</section>
+<section>
+<section id="slide-orgeecebd2">
+<h2 id="orgeecebd2">Slide 2</h2>
+<div class="outline-text-2" id="text-orgeecebd2">
+</div>
+</section>
+<section id="slide-org945214c">
+<h3 id="org945214c">Subslide 1</h3>
+</section>
+<section id="slide-orge51fc42">
+<h3 id="orge51fc42">subslide 2</h3>
+</section>
+</section>
+<section>
+<section id="slide-orgcb29f6b">
+<h2 id="orgcb29f6b">Slide 3</h2>
+<ul>
+<li>list item 1</li>
+<li><p>
+list item 2
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">a</th>
+<th scope="col" class="org-right">b</th>
+<th scope="col" class="org-right">c</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+<td class="org-right">3</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+<td class="org-right">5</td>
+<td class="org-right">6</td>
+</tr>
+</tbody>
+</table></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org40e5191">
+<h2 id="org40e5191">Slide 4</h2>
+<div class="org-src-container">
+
+<pre  class="src src-python"><code trim><span style="color: #0000FF;">def</span> <span style="color: #006699;">f</span>(x):
+    <span style="color: #0000FF;">return</span> x + 1
+
+<span style="color: #0000FF;">print</span>(f(5))
+</code></pre>
+</div>
+</section>
+</section>
+</div>
+</div>
+<script src="../reveal.js/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+ { src: '../reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: '../reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: '../reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: '../reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>

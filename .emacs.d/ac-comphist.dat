@@ -1,28 +1,22 @@
-((("undo-tree-visualizer-default-face" .
-   [0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
-  ("yas-global-mode" .
-   [0 0 0 0 0 0 0 0 0 0 0 0 0 0 1])
-  ("progn" .
-   [1 0 0 0 0])
-  ("yasnippet" .
-   [1 0 0 0 0 0 0 0 0])
-  ("YASnippet" .
-   [0 0 0 0 0 0 0 0 1])
-  (":init" .
-   [4 0 0 0 0])
+((("pp" .
+   [1 0])
+  ("sdb" .
+   [0 0 1])
+  ("import" .
+   [0 0 0 0 1 0])
+  ("use-package" .
+   [1 0 0 1 0 0 0 0 0 0 4])
+  ("global-hl-line-mode" .
+   [0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0])
   (":ensure" .
    [4 0 0 0 0 0 0])
-  ("flycheck-info" .
-   [0 0 0 0 0 0 0 0 1 0 0 0 0])
-  ("use-package" .
-   [1 0 0 0 1 0 0 0 0 0 2])
-  ("expand-file-name" .
-   [0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0])
-  ("org-babel-load-file" .
-   [0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0])
-  ("add-hook" .
-   [0 0 0 0 0 0 0 2])
-  ("python-mode-hook" .
-   [2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
-  ("ipaddress" .
-   [0 0 1 0 0 0 0 0 0])))
+  (":config" .
+   [3 0 0 0 0 0 0])
+  ("custom-set-variables" .
+   [0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0])
+  ("org-directory" .
+   [0 0 0 0 0 0 0 1 0 0 0 0 0])
+  ("org-default-notes-file" .
+   [0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0])
+  ("treemacs-magit" .
+   [1 0 0 0 0 0 0 0 0 0 0 0 0 0])))
