@@ -37,8 +37,6 @@ Prevent garbage collection during startup load time by setting =gc-cons-threshol
   (setq gc-cons-threshold most-positive-fixnum)
 #+END_SRC
 
-* Customized Variables
-
 
 * Package Management
 
@@ -109,4 +107,8 @@ Also prefer =auto-compile= to autocompile files as needed.
 #+END_SRC
 
 ** Load other package folders
+
+- =custom.el=
+
+add sadasd
 
