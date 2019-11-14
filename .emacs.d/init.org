@@ -1,0 +1,112 @@
+#+property: header-args:emacs-lisp :tangle (concat (file-name-sans-extension (buffer-file-name)) ".el")
+#+property: header-args :mkdirp yes :comments no
+#+startup: indent showall
+
+#+title: My Emacs Configuration File
+#+author: Simen Omholt-Jensen
+
+* Performance Optimization
+
+Define a hook that reports how long and how many garbage collections the startup took. The hook runs the code at the very end, so messages doesn't get clobbered by other messages during startup.
+
+#+begin_src emacs-lisp
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (message "Emacs ready in %s with %d garbage collections."
+                       (format "%.2f seconds"
+                               (float-time
+                                (time-subtract after-init-time before-init-time)))
+                       gcs-done)))
+#+end_src
+
+Wrap entire =init.el= file in a block that sets =file-name-handler-alist= to =nil=. This prevents any special-filename parsing of files loaded from the init file (e.g. remote files loaded through tramp, etc.). The =let= block gets closed at the end.
+
+#+BEGIN_SRC emacs-lisp
+  (let ((file-name-handler-alist nil))
+#+END_SRC
+
+Optionally, enable =debug-on-error=. For config debugging purposes.
+
+#+BEGIN_SRC emacs-lisp
+  ;; (setq debug-on-error t)
+#+END_SRC
+
+Prevent garbage collection during startup load time by setting =gc-cons-threshold= MAX. This is reset after load.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gc-cons-threshold most-positive-fixnum)
+#+END_SRC
+
+* Customized Variables
+
+
+* Package Management
+
+** Bootstrap =use-package= as package manager. 
+
+Used to cleanly install and configure packages.
+
+#+BEGIN_SRC emacs-lisp
+  (customize-set-variable 'package-archives
+			  '(("marmalade" . "https://marmalade-repo.org/packages/")
+			    ("melpa" . "https://melpa.org/packages/")))
+#+END_SRC
+
+Package system is then initialized, the list of packages are refreshed, and =use-package= is installed if not already. Lastly, =use-package= is loaded.
+
+#+BEGIN_SRC emacs-lisp
+  (package-initialize)
+
+  (when (not package-archive-contents)
+    (package-refresh-contents))
+
+  (when (not (package-installed-p 'use-package))
+    (package-install 'use-package))
+
+  (require 'use-package)
+#+END_SRC
+
+** Configure =use-package=
+
+   - The =use-package-always-ensure= variable indicates that =use-package= should always try to install missing packages. For some libraries this is not appropriate, and in those cases, =:ensure nil= is included as part of the =use-package= statement. This applies mainly to libraries which are installed as part of some other package (e.g. =org-mode= libraries).
+
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-variable 'use-package-always-ensure t)
+     #+END_SRC
+
+   - The =use-package-always-defer= set =:defer true= as the default for all package declarations. This makes Emacs startup much faster by preventing packages from being loaded when Emacs starts, and only doing so when they are needed. Some packages don't work well with this, so you'll see some declarations where =:defer nil= is explicitly set, to force the package to be loaded at startup. Further, =:defer n= is used to load the package, but only =n= seconds after startup.
+
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-variable 'use-package-always-defer t)
+     #+END_SRC
+
+   - The =use-package-verbose= variable enables verbose loading of packages, which is useful for debugging. Variable is set/unset according to need.
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-variable 'use-package-verbose nil)
+     #+END_SRC
+** Configure =quelpa=
+
+Install =quelpa= to install packages directly from github repositories. =quelpa-use-package= allows integration from within =use-package=.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package quelpa
+               :defer nil)
+
+  (use-package quelpa-use-package
+               :defer nil
+               :after quelpa)
+#+END_SRC
+
+** Prefer newer =.el= files over older compiled =.elc= files
+
+Also prefer =auto-compile= to autocompile files as needed.
+
+#+BEGIN_SRC emacs-lisp
+  (customize-set-variable 'load-prefer-newer t)
+  (use-package auto-compile
+               :defer nil
+               :config (auto-compile-on-load-mode))
+#+END_SRC
+
+** Load other package folders
+
