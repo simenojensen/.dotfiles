@@ -92,3 +92,5 @@ source $ZSH_CUSTOM/aliases.zsh
 source $ZSH_CUSTOM/exports.zsh
 source $ZSH_CUSTOM/functions.zsh
 
+# API Keys
+source ~/.app-env

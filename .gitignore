@@ -21,3 +21,5 @@ venv
 node_modules
 .sass-cache
 
+# API keys
+~/.app-env
