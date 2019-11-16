@@ -1,0 +1,22 @@
+;;; -*- coding: utf-8 -*-
+(("/Users/simenojensen/Documents/org/"
+  (dired-filename . "/Users/simenojensen/Documents/org/org-mode-tutorial.org"))
+ ("/Users/simenojensen/Documents/org/org-mode-tutorial.org" . 106)
+ ("/Users/simenojensen/.emacs.d/"
+  (dired-filename . "/Users/simenojensen/.emacs.d/init.el"))
+ ("/Users/simenojensen/.emacs.d/init.el" . 68)
+ ("/Users/simenojensen/.emacs.d/recentf" . 866)
+ ("/Users/simenojensen/.emacs.d/elpa/counsel-20191114.1015/counsel-autoloads.el" . 16737)
+ ("/Users/simenojensen/.emacs.d/elpa/swiper-20191114.1539/swiper-autoloads.el" . 1408)
+ ("/Users/simenojensen/.emacs.d/elpa/ivy-20191114.1539/ivy-autoloads.el" . 5265)
+ ("/Users/simenojensen/.emacs.d/elpa/smex-20151212.2209/smex-autoloads.el" . 626)
+ ("/Users/simenojensen/.emacs.d/elpa/crux-20181108.827/crux-autoloads.el" . 7375)
+ ("/Users/simenojensen/.emacs.d/elpa/undo-tree-0.3.1/undo-tree-autoloads.el" . 504)
+ ("/Users/simenojensen/.emacs.d/elpa/smart-mode-line-20190527.1156/smart-mode-line-autoloads.el" . 2389)
+ ("/Users/simenojensen/.emacs.d/elpa/rich-minority-20190419.1136/rich-minority-autoloads.el" . 1271)
+ ("/Users/simenojensen/.emacs.d/elpa/gruvbox-theme-20190720.337/gruvbox-theme-autoloads.el" . 2839)
+ ("/Users/simenojensen/.emacs.d/elpa/autothemer-20180920.923/autothemer-autoloads.el" . 1118)
+ ("/Users/simenojensen/.emacs.d/elpa/diminish-20170419.1736/diminish-autoloads.el" . 2371)
+ ("/Users/simenojensen/.emacs.d/elpa/which-key-20191111.1951/which-key-autoloads.el" . 5552)
+ ("/Users/simenojensen/.emacs.d/elpa/exec-path-from-shell-20190426.2227/exec-path-from-shell-autoloads.el" . 1420)
+ ("/Users/simenojensen/.emacs.d/elpa/smooth-scrolling-20161002.1949/smooth-scrolling-autoloads.el" . 3337))

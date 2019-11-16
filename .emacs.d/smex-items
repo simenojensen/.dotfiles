@@ -1,0 +1,19 @@
+
+;; ----- smex-history -----
+(
+ shell
+ describe-personal-keybindings
+ query-replace
+ package-refresh-contents
+ cd
+ 5x5
+ arp
+)
+
+;; ----- smex-data -----
+(
+ (package-refresh-contents . 1)
+ (query-replace . 2)
+ (describe-personal-keybindings . 1)
+ (shell . 1)
+)
