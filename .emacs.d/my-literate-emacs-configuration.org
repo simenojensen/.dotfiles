@@ -258,7 +258,6 @@ More Information]]
 #+END_SRC
 
 * Functionality Functions
-
 ** Toggle line comment
 
 Comment or uncomment the current line. Bind to ~C-;~.
@@ -346,8 +345,8 @@ Not implemented.
 Not Implemented
 
 #+BEGIN_SRC emacs-lisp
-	  ((eq system-type 'gnu/linux))
-  )
+  ((eq system-type 'gnu/linux))
+ )
 #+END_SRC
 
 * Keybindings
