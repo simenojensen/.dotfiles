@@ -8,6 +8,7 @@
 ** Startup Benchmarking
 
 First, declare a hook which will benchmark the startup process. It reports how long the it took to start up, and how many garbage collections were performed.
+[[https://blog.d46.us/advanced-emacs-startup/][More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'emacs-startup-hook
@@ -21,7 +22,7 @@ First, declare a hook which will benchmark the startup process. It reports how l
 
 ** Disable regexps when parsing filenames during startup.
 
-[[https://www.reddit.com/r/emacs/comments/3kqt6e/2_easy_little_known_steps_to_speed_up_emacs_start/][Normally]], =file-name-handler-alist= is set to:
+Normally,  =file-name-handler-alist= is set to:
 
 #+BEGIN_SRC :tangle no
 (("\\`/[^/]*\\'" . tramp-completion-file-name-handler)
@@ -30,6 +31,7 @@ First, declare a hook which will benchmark the startup process. It reports how l
 #+END_SRC
 
 This means Emacs has to run these on every =.el= and =.elc= file loaded during startup. By wrapping the Emacs configuration init code,  =(let ((file-name-handler-alist nil)) <init file>)=, the startup load time can be improved. The expression gets closed in the Epilogue.
+[[https://www.reddit.com/r/emacs/comments/3kqt6e/2_easy_little_known_steps_to_speed_up_emacs_start/][More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (let ((file-name-handler-alist nil))
@@ -46,206 +48,329 @@ Toggle this to receive more information when encountering startup errors.
 ** Increase Garbage Collection Threshold
 
 When Emacs loads files, packages or libraries, the data is placed in normal storage. When the normal storage runs out, Emacs asks the operating system to allocate more memory. This process is known as garbage collection, and as the default value for Emacs is only ~800kB, it happens quite frequently during startup. As such, we can improve startup performance by increasing this value. In the Epilogue, this value is lowered back down to a sensible default.
+[[https://github.com/zzamboni/dot-emacs/blob/master/init.org#performance-optimization][More Information]]
 
 #+BEGIN_SRC emacs-lisp
-  (setq gc-cons-threshold most-positive-fixnum)
+(setq gc-cons-threshold most-positive-fixnum)
+#+End_SRC
+
+* Package Management
+
+** =package.el=
+
+By default, Emacs 24 or later comes with a built-in package management system (=package.el=). To add further functionality such as adding package repositories and tweaking package configurations, =package.el= needs to be loaded in the =init.el= file during startup.
+[[https://www.gnu.org/software/emacs/manual/html_mono/emacs.html#Package-Installation][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
 #+END_SRC
 
+** Define Package Repositories
+
+By default, Emacs comes with the Emacs Lisp Package Archive (ELPA). As the packages need to be FSF-sanctioned, there aren't that many to choose from. By adding the Milkypostman's Emacs Lisp Package Archive ([[https://melpa.org/][MELPA]]), an enormous amount of packages become available.
 
 #+BEGIN_SRC emacs-lisp
+  (setq-default package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                                   ("melpa" . "https://melpa.org/packages/")
+                                   ("org" . "https://orgmode.org/elpa/")))
+#+END_SRC
 
+** Prepare packages for configuration
 
-;; Load package.el
-(require 'package)
+- Run =package-initialize= to set up the load-paths and autoloads for installed packages.
+[[https://www.emacswiki.org/emacs/InstallingPackages][More Information]]
 
-;; Do not load packages twice
-(setq-default package-enable-at-startup nil)
+#+BEGIN_SRC emacs-lisp
+  (package-initialize)
+#+END_SRC
 
-;; Add melpa to package archives.
-(setq-default package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                                 ("melpa" . "https://melpa.org/packages/")
-                                 ("org" . "https://orgmode.org/elpa/")))
+- Set =package-enable-at-startup= to =nil= to prevent superfluous loading of packages.
+[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Package-Installation.html][More Information]]
 
-;; Load and activate Emacs packages
-(package-initialize)
+#+BEGIN_SRC emacs-lisp
+  (setq-default package-enable-at-startup nil)
+#+END_SRC
 
-;; Install 'use-package' if it is not installed.
-(when (not (package-installed-p 'use-package))
-  (package-refresh-contents)
-  (package-install 'use-package))
-(eval-when-compile
-  (require 'use-package))
+** Bootstrap =use-package=
 
-;; Configure use-package to install packages not already installed
-(require 'use-package-ensure)
-(setq-default use-package-always-ensure t)
+- The =use-package= macro allows cleaner configuration of package loading and installation.
+[[https://github.com/jwiegley/use-package][More Information]]
 
-;; Keep packages update
-(use-package auto-package-update
-  :config
-  (setq-default auto-package-update-delete-old-versions t)
-  (setq-default auto-package-update-hide-results t)
-  (auto-package-update-maybe))
+#+BEGIN_SRC emacs-lisp
+  (when (not (package-installed-p 'use-package))
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (eval-when-compile
+    (require 'use-package))
+#+END_SRC
 
-;; Configure compilation behaviour
-(setq-default load-prefer-newer t)
-(use-package auto-compile
-  :config
-  (auto-compile-on-load-mode))
+- By setting =use-package-always-ensure= to =t=, =use-package= will install packages that are not already installed.
 
-;; Require bind-key to use ~M-x~ =describe-personal-keybindings=
-(require 'bind-key)
+#+BEGIN_SRC emacs-lisp
+  (require 'use-package-ensure)
+  (setq-default use-package-always-ensure t)
+#+END_SRC
 
-;; --------------------- Configure Better Default Settings --------------------
+** Automatically update packages with =auto-package-update=.
 
-(setq-default
- ;; Don't show the startup message
- inhibit-startup-message t
+[[https://github.com/rranelli/auto-package-update.el][More Information]]
 
-;; Place the automatically added 'customize' variables in "custom.el"
- custom-file "~/.emacs.d/custom.el"
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-package-update
+    :config
+    (setq-default auto-package-update-delete-old-versions t)
+    (setq-default auto-package-update-hide-results t)
+    (auto-package-update-maybe))
+#+END_SRC
 
- ;; set column width to 80
- fill-column 80
+** Prefer newer =.el= files over older =.elc= files.
 
- ;; Don't use hard tabs
- indent-tabs-mode nil
+#+BEGIN_SRC emacs-lisp
+  (setq-default load-prefer-newer t)
+#+END_SRC
 
- ;; Setup separate directory for Emacs backup files to "~/.emacs.d/backups/".
- ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Backup-Files.html
- backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
+** Automatically compile packages during startup.
+[[https://github.com/emacscollective/auto-compile][More Information]]
 
- ;; Disable view jump when cursor moves out of frame
- scroll-conservatively 101
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-compile
+    :config
+    (auto-compile-on-load-mode)
+  (auto-compile-on-save-mode))
+#+END_SRC
 
- ;; Close.
- )
+** Require =bind-key= to use ~M-x~ =describe-personal-keybindings=.
 
-;; Change 'yes-or-no' prompt to 'y-or-n'
-(fset 'yes-or-no-p 'y-or-n-p)
+#+BEGIN_SRC emacs-lisp
+  (require 'bind-key)
+#+END_SRC
 
-;; Delete whitespace when a file is saved
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+* More Convenient Default Settings
 
-;; Automatically update buffers if file content on the disk has changed
-(global-auto-revert-mode t)
+- Don't show the startup message.
 
-;; Save window configurations
-(desktop-save-mode t)
+#+BEGIN_SRC emacs-lisp
+  (setq-default inhibit-startup-message t)
+#+END_SRC
 
-;; Save point position
-(save-place-mode t)
+- Place the automatically added 'customize-variables' in =custom.el=.
 
-;; Highlight line on point.
-(global-hl-line-mode t)
+#+BEGIN_SRC emacs-lisp
+  (setq-default custom-file "~/.emacs.d/custom.el")
+#+END_SRC
 
-;; When saving a file, update the time stamp of the first 8 lines with the
-;; current time.
-(add-hook 'before-save-hook 'time-stamp)
+- Save automatically generated backup files to =~/.emacs.d/backups/=.
 
-;; Show a vertical indicator at fill-column-width in all files
-(use-package fill-column-indicator
-  :hook (after-change-major-mode . fci-mode))
+#+BEGIN_SRC emacs-lisp
+   backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
+#+END_SRC
 
-;; -------------------------------- Disable GUIs --------------------------------
+- Set the column width to 80 characters.
 
-;; Don't show menu bar.
-(menu-bar-mode -1)
+#+BEGIN_SRC emacs-lisp
+  (setq-default fill-column 80)
+#+END_SRC
 
-;; Don't show tool bar.
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
+- Don't use hard tabs.
 
-;; Don't show scroll bar.
-(when (fboundp 'scroll-bar-mode)
-  (scroll-bar-mode -1))
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+END_SRC
 
-;; Disable blinking cursor
-(blink-cursor-mode -1)
+- Disable the cursor jump when it moves out of the window.
 
-;; Disable bell noise
-(setq-default ring-bell-function 'ignore)
+#+BEGIN_SRC emacs-lisp
+  scroll-conservatively 101
+#+END_SRC
 
-;; ---------------------------- Added Functionality ---------------------------
+- Change =yes-or-no= prompt to =y-or-n=.
 
+#+BEGIN_SRC emacs-lisp
+  (fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+- Delete trailing whitespace when a file is saved.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+END_SRC
+
+- Automatically update buffers if a file content on the disk has changed.
+
+#+BEGIN_SRC emacs-lisp
+  (global-auto-revert-mode t)
+#+END_SRC
+
+- Save window and frame configuration.
+
+#+BEGIN_SRC emacs-lisp
+  (desktop-save-mode t)
+#+END_SRC
+
+- Save position of the point in file.
+
+#+BEGIN_SRC emacs-lisp
+  (save-place-mode t)
+#+END_SRC
+
+- Highlight the line with the point.
+
+#+BEGIN_SRC emacs-lisp
+  (global-hl-line-mode t)
+#+END_SRC
+
+- When saving a file, update the time stamp of the first 8 lines to the current time.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'before-save-hook 'time-stamp)
+#+END_SRC
+
+* Disable GUIs
+
+- Don't show the menu bar.
+
+#+BEGIN_SRC emacs-lisp
+  (menu-bar-mode -1)
+#+END_SRC
+
+- Don't show the tool bar.
+
+#+BEGIN_SRC emacs-lisp
+  (when (fboundp 'tool-bar-mode)
+    (tool-bar-mode -1))
+#+END_SRC
+
+- Don't show the scroll bar.
+
+#+BEGIN_SRC emacs-lisp
+  (when (fboundp 'scroll-bar-mode)
+    (scroll-bar-mode -1))
+#+END_SRC
+
+- Disable the blinking cursor.
+
+#+BEGIN_SRC emacs-lisp
+  (blink-cursor-mode -1)
+#+END_SRC
+
+- Disable the =ring-bell= function.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default ring-bell-function 'ignore)
+#+END_SRC
+
+* Functionality Functions
+
+** Toggle line comment
+
+Comment or uncomment the current line. Bind to ~C-;~.
+
+#+BEGIN_SRC emacs-lisp
 (defun my/toggle-comment-on-line ()
-  "Comment or uncomment current line."
   (interactive)
   (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
 
 (bind-key "C-;" 'my/toggle-comment-on-line)
+#+END_SRC
 
-(defun my/header-comment ()
-  "Insert a comment with '-' (Unicode character: U+2015) on each side of prompt."
-  (interactive)
-  (let* ((comment (read-from-minibuffer "Comment: "))
-         (comment-length (length comment))
-         (current-column-pos (current-column))
-         (space-on-each-side (/ (- fill-column
-                                   current-column-pos
-                                   comment-length
-                                   (length comment-start)
-                                   ;; Single space on each side of comment
-                                   (if (> comment-length 0) 2 0)
-                                   ;; Single space after comment syntax string
-                                   1)
-                                2)))
-    (if (< space-on-each-side 2)
-        (message "Comment string is too big to fit in one line")
-      (progn
-        (insert comment-start)
-        (when (equal comment-start ";")
-          (insert comment-start))
-        (insert " ")
-        (dotimes (_ space-on-each-side) (insert "-"))
-        (when (> comment-length 0) (insert " "))
-        (insert comment)
-        (when (> comment-length 0) (insert " "))
-        (dotimes (_ (if (= (% comment-length 2) 0)
-                        space-on-each-side
-                      (- space-on-each-side 1)))
-          (insert "-"))))))
+** Reload Emacs Configurations
 
-(bind-key "C-c ;" 'my/header-comment)
+This function reloads =~/.emacs.d/init.el=.
 
-(defun my/reload-emacs-configuration ()
-  "Reloads init.el."
-  (interactive)
-  (load-file "~/.emacs.d/init.el"))
+#+BEGIN_SRC emacs-lisp
+  (defun my/reload-emacs-configuration ()
+    "Reloads init.el."
+    (interactive)
+    (load-file "~/.emacs.d/init.el"))
+#+END_SRC
 
-;; ---------------------------- OS Specific Settings ----------------------------
+* OS Specific Settings
 
-(cond ((eq system-type 'darwin)
+Detect which OS Emacs is being run on, and configure keybindings accordingly.
 
-       ;; Change modifier keys to emulate macOS
-       (customize-set-variable 'mac-command-modifier 'meta)
-       (customize-set-variable 'mac-option-modifier 'alt)
-       (customize-set-variable 'mac-right-option-modifier 'super)
+#+BEGIN_SRC emacs-lisp
+  (cond
+#+END_SRC
 
-       ;; Emulate macOS text scale shortcuts
-       (bind-key "M-+" 'text-scale-increase)
-       (bind-key "M-=" 'text-scale-increase)
-       (bind-key "M--" 'text-scale-decrease)
+** macOS
 
-       (defun my/text-scale-reset ()
-         "Reset text scaling to default"
-         (interactive)
-         (text-scale-set 0))
+#+BEGIN_SRC emacs-lisp
+  ((eq system-type 'darwin)
+#+END_SRC
 
-       (bind-key "M-0" 'my/text-scale-reset)
+By setting the ~M~ to ~⌘~, ~A~ to ~^~ (left option)  and ~S~ to ~^~ (right option), we can emulate some of the macOS keyboard configurations.
 
-       ;; Load the path settings from the shell into Emacs
-       (use-package exec-path-from-shell
-         :defer nil
-         :config
-         (exec-path-from-shell-initialize))
-       )
-      ((eq system-type 'windows-nt)
+#+BEGIN_SRC emacs-lisp
+  (customize-set-variable 'mac-command-modifier 'meta)
+  (customize-set-variable 'mac-option-modifier 'alt)
+  (customize-set-variable 'mac-right-option-modifier 'super)
+#+END_SRC
 
-       )
-      ((eq system-type 'gnu/linux)
+Next, we are binding ~M-=~ to increase the font size, and ~M--~ to decrease the font size.
 
-       ))
+#+BEGIN_SRC emacs-lisp
+  (bind-key "M-=" 'text-scale-increase)
+  (bind-key "M--" 'text-scale-decrease)
+#+END_SRC
+
+Further, a function borrowed from [[https://zzamboni.org/post/my-emacs-configuration-with-commentary/#mac][zzamboni]] is implemented and bound to ~M-0~.
+
+#+BEGIN_SRC emacs-lisp
+  (defun my/text-scale-reset ()
+    "Reset text scaling to default"
+    (interactive)
+    (text-scale-set 0))
+
+  (bind-key "M-0" 'my/text-scale-reset)
+#+END_SRC
+
+Lastly, we make sure the =$PATH= is loaded from the default shell.
+[[https://github.com/purcell/exec-path-from-shell][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package exec-path-from-shell
+    :defer nil
+    :config
+    (exec-path-from-shell-initialize))
+  )
+#+END_SRC
+
+** Windows
+
+Not implemented.
+
+#+BEGIN_SRC emacs-lisp
+  ((eq system-type 'windows-nt))
+#+END_SRC
+
+** Linux
+
+Not Implemented
+
+#+BEGIN_SRC emacs-lisp
+	  ((eq system-type 'gnu/linux))
+  )
+#+END_SRC
+
+* Keybindings
+
+** which-key
+
+The =which-key= package automatically displays potential command information as command keys are typed. This makes it easy to explore Emacs functionality.
+[[https://github.com/justbur/emacs-which-key][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :diminish which-key-mode
+    :config
+    (setq which-key-idle-delay 0.5)
+    (which-key-mode))
+#+END_SRC
+
+* dflaksjdfjasdf
+
+#+BEGIN_SRC emacs-lisp
+
 
 ;; -------------------------------- Key Bindings --------------------------------
 
