@@ -4,12 +4,10 @@
 #+PROPERTY:     header-args:emacs-lisp     :tangle "~/.emacs.d/init.el"
 
 * Performance Optimization
-
 ** Startup Benchmarking
 
 First, declare a hook which will benchmark the startup process. It reports how long the it took to start up, and how many garbage collections were performed.
-[[https://blog.d46.us/advanced-emacs-startup/][
-More Information]]
+[[https://blog.d46.us/advanced-emacs-startup/][More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'emacs-startup-hook
@@ -56,7 +54,6 @@ When Emacs loads files, packages or libraries, the data is placed in normal stor
 #+End_SRC
 
 * Package Management
-
 ** =package.el=
 
 By default, Emacs 24 or later comes with a built-in package management system (=package.el=). To add further functionality such as adding package repositories and tweaking package configurations, =package.el= needs to be loaded in the =init.el= file during startup.
@@ -78,15 +75,13 @@ By default, Emacs comes with the Emacs Lisp Package Archive (ELPA). As the packa
 
 ** Prepare packages for configuration
 
-- Run =package-initialize= to set up the load-paths and autoloads for installed packages.
-[[https://www.emacswiki.org/emacs/InstallingPackages][More Information]]
+- Run =package-initialize= to set up the load-paths and autoloads for installed packages. [[https://www.emacswiki.org/emacs/InstallingPackages][More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (package-initialize)
 #+END_SRC
 
-- Set =package-enable-at-startup= to =nil= to prevent superfluous loading of packages.
-[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Package-Installation.html][More Information]]
+- Set =package-enable-at-startup= to =nil= to prevent superfluous loading of packages. [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Package-Installation.html][More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (setq-default package-enable-at-startup nil)
@@ -95,7 +90,8 @@ By default, Emacs comes with the Emacs Lisp Package Archive (ELPA). As the packa
 ** Bootstrap =use-package=
 
 - The =use-package= macro allows cleaner configuration of package loading and installation.
-[[https://github.com/jwiegley/use-package][More Information]]
+[[https://github.com/jwiegley/use-package][
+More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (when (not (package-installed-p 'use-package))
@@ -131,7 +127,8 @@ By default, Emacs comes with the Emacs Lisp Package Archive (ELPA). As the packa
 #+END_SRC
 
 ** Automatically compile packages during startup.
-[[https://github.com/emacscollective/auto-compile][More Information]]
+[[https://github.com/emacscollective/auto-compile][
+More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (use-package auto-compile
@@ -181,7 +178,7 @@ By default, Emacs comes with the Emacs Lisp Package Archive (ELPA). As the packa
 - Disable the cursor jump when it moves out of the window.
 
 #+BEGIN_SRC emacs-lisp
-  scroll-conservatively 101
+  (setq-default scroll-conservatively 101)
 #+END_SRC
 
 - Change =yes-or-no= prompt to =y-or-n=.
