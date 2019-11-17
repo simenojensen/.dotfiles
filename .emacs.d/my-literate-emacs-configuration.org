@@ -23,9 +23,12 @@ First, declare a hook which will benchmark the startup process. It reports how l
 
 [[https://www.reddit.com/r/emacs/comments/3kqt6e/2_easy_little_known_steps_to_speed_up_emacs_start/][Normally]], =file-name-handler-alist= is set to:
 
-=(("\\`/[^/]*\\'" . tramp-completion-file-name-handler)
+#+BEGIN_SRC :tangle no
+(("\\`/[^/]*\\'" . tramp-completion-file-name-handler)
 ("\\`/[^/|:][^/|]*:" . tramp-file-name-handler)
-("\\`/:" . file-name-non-special))=
+("\\`/:" . file-name-non-special))
+#+END_SRC
+
 This means Emacs has to run these on every =.el= and =.elc= file loaded during startup. By wrapping the Emacs configuration init code,  =(let ((file-name-handler-alist nil)) <init file>)=, the startup load time can be improved. The expression gets closed in the Epilogue.
 
 #+BEGIN_SRC emacs-lisp
