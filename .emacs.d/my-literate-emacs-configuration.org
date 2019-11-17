@@ -1,0 +1,299 @@
+#+TITLE: My Literate Emacs Configurations
+#+AUTHOR: Simen Omholt-Jensen
+#+STARTUP:     hideall
+#+PROPERTY:     header-args:emacs-lisp     :tangle "~/.emacs.d/init.el"
+
+* Performance Optimization
+
+** Startup Benchmarking
+
+First, declare a hook which will benchmark the startup process. It reports how long the it took to start up, and how many garbage collections were performed.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (message "Emacs ready in %s with %d garbage collections."
+                       (format "%.2f seconds"
+                               (float-time
+                                (time-subtract after-init-time before-init-time)))
+                       gcs-done)))
+#+END_SRC
+
+** Disable regexps when parsing filenames during startup.
+
+[[https://www.reddit.com/r/emacs/comments/3kqt6e/2_easy_little_known_steps_to_speed_up_emacs_start/][Normally]], =file-name-handler-alist= is set to:
+
+```
+(("\\`/[^/]*\\'" . tramp-completion-file-name-handler)
+("\\`/[^/|:][^/|]*:" . tramp-file-name-handler)
+("\\`/:" . file-name-non-special))
+```
+This means Emacs has to run these on every =.el= and =.elc= file loaded during startup. By wrapping the Emacs configuration init code,  =(let ((file-name-handler-alist nil)) <init file>)=, the startup load time can be improved. The expression gets closed in the Epilogue.
+
+#+BEGIN_SRC emacs-lisp
+  (let ((file-name-handler-alist nil))
+#+END_SRC
+
+** Show Debugging Information
+
+Toggle this to receive more information when encountering startup errors.
+
+#+BEGIN_SRC emacs-lisp
+  ;; (setq debug-on-error t)
+#+END_SRC
+
+** Increase Garbage Collection Threshold
+
+When Emacs loads files, packages or libraries, the data is placed in normal storage. When the normal storage runs out, Emacs asks the operating system to allocate more memory. This process is known as garbage collection, and as the default value for Emacs is only ~800kB, it happens quite frequently during startup. As such, we can improve startup performance by increasing this value. In the Epilogue, this value is lowered back down to a sensible default.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gc-cons-threshold most-positive-fixnum)
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+
+
+;; Load package.el
+(require 'package)
+
+;; Do not load packages twice
+(setq-default package-enable-at-startup nil)
+
+;; Add melpa to package archives.
+(setq-default package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                                 ("melpa" . "https://melpa.org/packages/")
+                                 ("org" . "https://orgmode.org/elpa/")))
+
+;; Load and activate Emacs packages
+(package-initialize)
+
+;; Install 'use-package' if it is not installed.
+(when (not (package-installed-p 'use-package))
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-when-compile
+  (require 'use-package))
+
+;; Configure use-package to install packages not already installed
+(require 'use-package-ensure)
+(setq-default use-package-always-ensure t)
+
+;; Keep packages update
+(use-package auto-package-update
+  :config
+  (setq-default auto-package-update-delete-old-versions t)
+  (setq-default auto-package-update-hide-results t)
+  (auto-package-update-maybe))
+
+;; Configure compilation behaviour
+(setq-default load-prefer-newer t)
+(use-package auto-compile
+  :config
+  (auto-compile-on-load-mode))
+
+;; Require bind-key to use ~M-x~ =describe-personal-keybindings=
+(require 'bind-key)
+
+;; --------------------- Configure Better Default Settings --------------------
+
+(setq-default
+ ;; Don't show the startup message
+ inhibit-startup-message t
+
+;; Place the automatically added 'customize' variables in "custom.el"
+ custom-file "~/.emacs.d/custom.el"
+
+ ;; set column width to 80
+ fill-column 80
+
+ ;; Don't use hard tabs
+ indent-tabs-mode nil
+
+ ;; Setup separate directory for Emacs backup files to "~/.emacs.d/backups/".
+ ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Backup-Files.html
+ backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
+
+ ;; Disable view jump when cursor moves out of frame
+ scroll-conservatively 101
+
+ ;; Close.
+ )
+
+;; Change 'yes-or-no' prompt to 'y-or-n'
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; Delete whitespace when a file is saved
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; Automatically update buffers if file content on the disk has changed
+(global-auto-revert-mode t)
+
+;; Save window configurations
+(desktop-save-mode t)
+
+;; Save point position
+(save-place-mode t)
+
+;; Highlight line on point.
+(global-hl-line-mode t)
+
+;; When saving a file, update the time stamp of the first 8 lines with the
+;; current time.
+(add-hook 'before-save-hook 'time-stamp)
+
+;; Show a vertical indicator at fill-column-width in all files
+(use-package fill-column-indicator
+  :hook (after-change-major-mode . fci-mode))
+
+;; -------------------------------- Disable GUIs --------------------------------
+
+;; Don't show menu bar.
+(menu-bar-mode -1)
+
+;; Don't show tool bar.
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+
+;; Don't show scroll bar.
+(when (fboundp 'scroll-bar-mode)
+  (scroll-bar-mode -1))
+
+;; Disable blinking cursor
+(blink-cursor-mode -1)
+
+;; Disable bell noise
+(setq-default ring-bell-function 'ignore)
+
+;; ---------------------------- Added Functionality ---------------------------
+
+(defun my/toggle-comment-on-line ()
+  "Comment or uncomment current line."
+  (interactive)
+  (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
+
+(bind-key "C-;" 'my/toggle-comment-on-line)
+
+(defun my/header-comment ()
+  "Insert a comment with '-' (Unicode character: U+2015) on each side of prompt."
+  (interactive)
+  (let* ((comment (read-from-minibuffer "Comment: "))
+         (comment-length (length comment))
+         (current-column-pos (current-column))
+         (space-on-each-side (/ (- fill-column
+                                   current-column-pos
+                                   comment-length
+                                   (length comment-start)
+                                   ;; Single space on each side of comment
+                                   (if (> comment-length 0) 2 0)
+                                   ;; Single space after comment syntax string
+                                   1)
+                                2)))
+    (if (< space-on-each-side 2)
+        (message "Comment string is too big to fit in one line")
+      (progn
+        (insert comment-start)
+        (when (equal comment-start ";")
+          (insert comment-start))
+        (insert " ")
+        (dotimes (_ space-on-each-side) (insert "-"))
+        (when (> comment-length 0) (insert " "))
+        (insert comment)
+        (when (> comment-length 0) (insert " "))
+        (dotimes (_ (if (= (% comment-length 2) 0)
+                        space-on-each-side
+                      (- space-on-each-side 1)))
+          (insert "-"))))))
+
+(bind-key "C-c ;" 'my/header-comment)
+
+(defun my/reload-emacs-configuration ()
+  "Reloads init.el."
+  (interactive)
+  (load-file "~/.emacs.d/init.el"))
+
+;; ---------------------------- OS Specific Settings ----------------------------
+
+(cond ((eq system-type 'darwin)
+
+       ;; Change modifier keys to emulate macOS
+       (customize-set-variable 'mac-command-modifier 'meta)
+       (customize-set-variable 'mac-option-modifier 'alt)
+       (customize-set-variable 'mac-right-option-modifier 'super)
+
+       ;; Emulate macOS text scale shortcuts
+       (bind-key "M-+" 'text-scale-increase)
+       (bind-key "M-=" 'text-scale-increase)
+       (bind-key "M--" 'text-scale-decrease)
+
+       (defun my/text-scale-reset ()
+         "Reset text scaling to default"
+         (interactive)
+         (text-scale-set 0))
+
+       (bind-key "M-0" 'my/text-scale-reset)
+
+       ;; Load the path settings from the shell into Emacs
+       (use-package exec-path-from-shell
+         :defer nil
+         :config
+         (exec-path-from-shell-initialize))
+       )
+      ((eq system-type 'windows-nt)
+
+       )
+      ((eq system-type 'gnu/linux)
+
+       ))
+
+;; -------------------------------- Key Bindings --------------------------------
+
+;; which-key automatically displays command information as you enter key
+;; combinations
+(use-package which-key
+  :diminish which-key-mode
+  :config
+  (which-key-mode))
+
+;; Go to line number
+(bind-key "M-g" 'goto-line)
+
+;; Create new frame
+(bind-key "M-n" 'make-frame)
+
+;; Focus next frame
+(bind-key "M-`" 'other-frame)
+
+;; Close frame
+(bind-key "M-w" 'delete-frame)
+(bind-key "A-w" 'kill-ring-save)
+
+;; ---------------------------------- Epilogue ----------------------------------
+
+;; Close =file-name-handler-alist=
+;;)
+
+;; The =gc-cons-threshold= value is reset to an appropriate value.
+(setq gc-cons-threshold (* 2 1000 1000))
+
+
+#+END_SRC
+
+
+
+* Epilogue
+
+** Close =file-name-handler-alist= Expression
+Here, the =file-name-handler-alist= expression gets closed out.
+
+#+BEGIN_SRC emacs-lisp
+  )
+#+END_SRC
+
+** Sensible Garbage Collection Threshold
+
+Here, the =gc-cons-threshold= is set to a sensible value for normal use.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gc-cons-threshold (* 2 1000 1000))
+#+END_SRC
