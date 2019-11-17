@@ -19,7 +19,7 @@ First, declare a hook which will benchmark the startup process. It reports how l
                        gcs-done)))
 #+END_SRC
 
-** Disable regexps when parsing filenames during startup.
+** Disable regexps when Parsing Filenames during Startup.
 
 Normally,  =file-name-handler-alist= is set to:
 
@@ -73,7 +73,7 @@ By default, Emacs comes with the Emacs Lisp Package Archive (ELPA). As the packa
                                    ("org" . "https://orgmode.org/elpa/")))
 #+END_SRC
 
-** Prepare packages for configuration
+** Prepare Packages for Configuration
 
 - Run =package-initialize= to set up the load-paths and autoloads for installed packages. [[https://www.emacswiki.org/emacs/InstallingPackages][More Information]]
 
@@ -108,7 +108,7 @@ More Information]]
   (setq-default use-package-always-ensure t)
 #+END_SRC
 
-** Automatically update packages with =auto-package-update=.
+** Automatically Update Packages with =auto-package-update=.
 
 [[https://github.com/rranelli/auto-package-update.el][More Information]]
 
@@ -120,13 +120,13 @@ More Information]]
     (auto-package-update-maybe))
 #+END_SRC
 
-** Prefer newer =.el= files over older =.elc= files.
+** Prefer Newer =.el= Files Over Older =.elc= Files.
 
 #+BEGIN_SRC emacs-lisp
   (setq-default load-prefer-newer t)
 #+END_SRC
 
-** Automatically compile packages during startup.
+** Automatically Compile Packages During Startup.
 [[https://github.com/emacscollective/auto-compile][
 More Information]]
 
@@ -137,7 +137,7 @@ More Information]]
   (auto-compile-on-save-mode))
 #+END_SRC
 
-** Require =bind-key= to use ~M-x~ =describe-personal-keybindings=.
+** Require =bind-key= to Use ~M-x~ =describe-personal-keybindings=.
 
 #+BEGIN_SRC emacs-lisp
   (require 'bind-key)
@@ -258,7 +258,7 @@ More Information]]
 #+END_SRC
 
 * Functionality Functions
-** Toggle line comment
+** Toggle Line Comment
 
 Comment or uncomment the current line. Bind to ~C-;~.
 
@@ -350,7 +350,6 @@ Not Implemented
 #+END_SRC
 
 * Keybindings
-
 ** which-key
 
 The =which-key= package automatically displays potential command information as command keys are typed. This makes it easy to explore Emacs functionality.
@@ -364,53 +363,36 @@ The =which-key= package automatically displays potential command information as 
     (which-key-mode))
 #+END_SRC
 
+** List of Bindings
 
-
-
-
-* dflaksjdfjasdf
+- Go to line number.
 
 #+BEGIN_SRC emacs-lisp
-
-
-;; -------------------------------- Key Bindings --------------------------------
-
-;; which-key automatically displays command information as you enter key
-;; combinations
-(use-package which-key
-  :diminish which-key-mode
-  :config
-  (which-key-mode))
-
-;; Go to line number
-(bind-key "M-g" 'goto-line)
-
-;; Create new frame
-(bind-key "M-n" 'make-frame)
-
-;; Focus next frame
-(bind-key "M-`" 'other-frame)
-
-;; Close frame
-(bind-key "M-w" 'delete-frame)
-(bind-key "A-w" 'kill-ring-save)
-
-;; ---------------------------------- Epilogue ----------------------------------
-
-;; Close =file-name-handler-alist=
-;;)
-
-;; The =gc-cons-threshold= value is reset to an appropriate value.
-(setq gc-cons-threshold (* 2 1000 1000))
-
-
+  (bind-key "M-g" 'goto-line)
 #+END_SRC
 
+- Create new frame (emulate macOS' "new window" shortcut).
 
+#+BEGIN_SRC emacs-lisp
+  (bind-key "M-n" 'make-frame)
+#+END_SRC
+
+- Focus next frame (emulate macOS' "focus next window" shortcut).
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "M-`" 'other-frame)
+#+END_SRC
+
+- Close frame (emulate macOS' "close window" shortcut). =kill-ring-save= is remapped to ~A-w~.
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "M-w" 'delete-frame)
+  (bind-key "A-w" 'kill-ring-save)
+#+END_SRC
 
 * Epilogue
-
 ** Close =file-name-handler-alist= Expression
+
 Here, the =file-name-handler-alist= expression gets closed out.
 
 #+BEGIN_SRC emacs-lisp
