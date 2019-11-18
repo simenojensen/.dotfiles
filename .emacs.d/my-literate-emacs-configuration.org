@@ -517,7 +517,6 @@ The =diminish= package makes it possible to remove clutter from the modeline. Th
 #+END_SRC
 
 * Coding
-
 ** General
 
 - =iedit= allows you to edit multiple occurrences of a symbol or region.
@@ -528,6 +527,50 @@ The =diminish= package makes it possible to remove clutter from the modeline. Th
     :bind
     ("M-;" . iedit-mode))
 #+END_SRC
+
+** Python
+
+Python setup with [[https://docs.conda.io/en/latest/miniconda.html][miniconda]].
+
+*** Miniconda installation
+
+- =$brew cask install miniconda=
+- =$conda init "$(basename "${SHELL}")=
+- =$conda update conda=
+- =$conda create -n py3=
+- =$conda activate py3=
+
+*** =conda.el=
+
+- Makes Python shells, interactive shells, eshell, anaconda-mode, and so on aware of conda environments
+- Detects and auto-activates the right conda environment for a particular buffer.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :hook
+    (after-init . global-company-mode))
+
+  (use-package anaconda-mode
+    :init
+    (add-hook 'python-mode-hook 'anaconda-mode)
+    (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
+    :config
+    (setq python-indent-offset 4
+          python-indent 4
+          python-shell-interpreter "ipython"
+          python-shell-interpreter-args "--single-prompt")
+    (use-package company-anaconda
+      :init
+      (eval-after-load "company"
+        '(add-to-list 'company-backends '(company-anaconda :with company-capf)))))
+
+  (use-package conda
+    :config
+    (setq conda-anaconda-home "/usr/local/Caskroom/miniconda")
+    (setq conda-env-home-directory "/usr/local/Caskroom/miniconda")
+    (conda-env-initialize-interactive-shells)
+    (conda-env-initialize-eshell))
+shell#+END_SRC
 
 * Epilogue
 ** Close =file-name-handler-alist= Expression

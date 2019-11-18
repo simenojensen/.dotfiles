@@ -23,7 +23,7 @@ alias la='ls -aFlh --almost-all --group-directories-first --color=auto'
 alias cat="ccat --bg=dark"
 
 # emacs
-alias emacs="emacs -nw"
+# alias emacs="emacs -nw"
 
 # Reload the shell (i.e. invoke as a login shell)
 alias reload="source ~/.zshrc"
@@ -40,4 +40,3 @@ alias ping='ping -c 10'
 # Hide/show all desktop icons (useful when presenting)
 alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
 alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
-

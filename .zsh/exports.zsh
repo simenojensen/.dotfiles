@@ -5,24 +5,6 @@ else
   export EDITOR='emacs'
 fi
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/usr/local/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/usr/local/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
-        . "/usr/local/Caskroom/miniconda/base/etc/profile.d/conda.sh"
-    else
-        export PATH="/usr/local/Caskroom/miniconda/base/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-conda activate py3
-# <<< conda initialize <<<
-
-
-
 # ncurses
 # export PATH="/usr/local/opt/ncurses/bin:$PATH"
 # export LDFLAGS="-L/usr/local/opt/ncurses/lib"
@@ -39,6 +21,11 @@ export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 # libffi
 # export LDFLAGS="-L/usr/local/opt/libffi/lib"
 
+# libressl
+export PATH="/usr/local/opt/libressl/bin:$PATH"
+# export LDFLAGS="-L/usr/local/opt/libressl/lib"
+# export CPPFLAGS="-I/usr/local/opt/libressl/include"
+
 # openssl@1.1
 # A CA file has been bootstrapped using certificates from the system
 # keychain. To add additional certificates, place .pem files in
@@ -49,11 +36,15 @@ export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 # export LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"
 # export CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"
 
+# imagemagick@6
+export PATH="/usr/local/opt/imagemagick@6/bin:$PATH"
+# export LDFLAGS="-L/usr/local/opt/imagemagick@6/lib"
+# export CPPFLAGS="-I/usr/local/opt/imagemagick@6/include"
+
 # sqlite
 export PATH="/usr/local/opt/sqlite/bin:$PATH"
 # export LDFLAGS="-L/usr/local/opt/sqlite/lib"
 # export CPPFLAGS="-I/usr/local/opt/sqlite/include"
-
 
 # gnu-sed
 export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
@@ -102,4 +93,19 @@ source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # openVPN
 export PATH="/usr/local/opt/openvpn/sbin:$PATH"
 
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/usr/local/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/usr/local/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
+        . "/usr/local/Caskroom/miniconda/base/etc/profile.d/conda.sh"
+    else
+        export PATH="/usr/local/Caskroom/miniconda/base/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+conda activate py3
+# <<< conda initialize <<<
 
