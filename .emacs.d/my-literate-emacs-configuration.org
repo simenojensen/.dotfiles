@@ -4,6 +4,50 @@
 #+PROPERTY:     header-args:emacs-lisp     :tangle "~/.emacs.d/init.el"
 
 
+* Table of Contents :TOC_3:
+- [[#performance-optimization][Performance Optimization]]
+  - [[#startup-benchmarking][Startup Benchmarking]]
+  - [[#disable-regexps-when-parsing-filenames-during-startup][Disable regexps when Parsing Filenames during Startup.]]
+  - [[#show-debugging-information][Show Debugging Information]]
+  - [[#increase-garbage-collection-threshold][Increase Garbage Collection Threshold]]
+- [[#package-management][Package Management]]
+  - [[#packageel][=package.el=]]
+  - [[#define-package-repositories][Define Package Repositories]]
+  - [[#security][Security]]
+  - [[#prepare-packages-for-configuration][Prepare Packages for Configuration]]
+  - [[#bootstrap-use-package][Bootstrap =use-package=]]
+  - [[#automatically-update-packages-with-auto-package-update][Automatically Update Packages with =auto-package-update=.]]
+  - [[#prefer-newer-el-files-over-older-elc-files][Prefer Newer =.el= Files Over Older =.elc= Files.]]
+  - [[#automatically-compile-packages-during-startup][Automatically Compile Packages During Startup.]]
+  - [[#require-bind-key-to-use-m-x-describe-personal-keybindings][Require =bind-key= to Use ~M-x~ =describe-personal-keybindings=.]]
+- [[#more-convenient-default-settings][More Convenient Default Settings]]
+- [[#disable-guis][Disable GUIs]]
+- [[#functionality][Functionality]]
+  - [[#window-navigation][Window Navigation]]
+  - [[#ivy--counsel--swiper][=Ivy= / =Counsel= / =Swiper=]]
+  - [[#toggle-line-comment][Toggle Line Comment]]
+  - [[#reload-emacs-configurations][Reload Emacs Configurations]]
+- [[#os-specific-settings][OS Specific Settings]]
+  - [[#macos][macOS]]
+  - [[#windows][Windows]]
+  - [[#linux][Linux]]
+- [[#keybindings][Keybindings]]
+  - [[#which-key][which-key]]
+  - [[#list-of-bindings][List of Bindings]]
+- [[#org-mode][org-mode]]
+  - [[#toc-org][=toc-org=]]
+- [[#appearance][Appearance]]
+  - [[#diminish][=diminish=]]
+  - [[#themes][Themes]]
+- [[#coding][Coding]]
+  - [[#general][General]]
+  - [[#python][Python]]
+    - [[#miniconda-installation][Miniconda installation]]
+    - [[#condael][=conda.el=]]
+- [[#epilogue][Epilogue]]
+  - [[#close-file-name-handler-alist-expression][Close =file-name-handler-alist= Expression]]
+  - [[#sensible-garbage-collection-threshold][Sensible Garbage Collection Threshold]]
+
 * Performance Optimization
 ** Startup Benchmarking
 
@@ -25,9 +69,9 @@ First, declare a hook which will benchmark the startup process. It reports how l
 Normally,  =file-name-handler-alist= is set to:
 
 #+BEGIN_SRC :tangle no
-(("\\`/[^/]*\\'" . tramp-completion-file-name-handler)
-("\\`/[^/|:][^/|]*:" . tramp-file-name-handler)
-("\\`/:" . file-name-non-special))
+# (("\\`/[^/]*\\'" . tramp-completion-file-name-handler)
+# ("\\`/[^/|:][^/|]*:" . tramp-file-name-handler)
+# ("\\`/:" . file-name-non-special))
 #+END_SRC
 
 This means Emacs has to run these on every =.el= and =.elc= file loaded during startup. By wrapping the Emacs configuration init code,  =(let ((file-name-handler-alist nil)) <init file>)=, the startup load time can be improved. The expression gets closed in the Epilogue.
@@ -97,23 +141,6 @@ Installing un-signed code into the editor that was downloaded over an unencrypte
                    (if (eq window-system 'w32) ".exe" "") trustfile)))
     ;; (setq gnutls-verify-error t)
     (setq gnutls-trustfiles (list trustfile)))
-
-  (defun check-tls-config ()
-    "Check for correctness in the TLS configuration for Emacs."
-    (interactive)
-    (let ((bad-hosts
-           (cl-loop for bad
-                 in `("https://wrong.host.badssl.com/"
-                      "https://self-signed.badssl.com/")
-                 if (condition-case e
-                        (url-retrieve
-                         bad (lambda (retrieved) t))
-                      (error nil))
-                 collect bad)))
-      (if bad-hosts
-          (error (format "TLS misconfigured; retrieved %s ok" bad-hosts))
-        (url-retrieve "https://badssl.com"
-                      (lambda (retrieved) t)))))
 #+END_SRC
 
 ** Prepare Packages for Configuration
@@ -192,6 +219,13 @@ More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (setq-default frame-title-format (list "[" user-login-name "@" (system-name) "] %b"))
+#+END_SRC
+
+- Display line numbers
+
+#+BEGIN_SRC emacs-lisp
+  (when (version<= "26.0.50" emacs-version )
+    (global-display-line-numbers-mode))
 #+END_SRC
 
 - Don't show the startup message. =inhibit-startup-message= and =inhibit-splash-screen= are aliases for this variable.
@@ -497,6 +531,31 @@ The =which-key= package automatically displays potential command information as 
   (bind-key "A-w" 'kill-ring-save)
 #+END_SRC
 
+* org-mode
+
+Install a newer version of org-mode. Further, remove org directories from the load path, to ensure this version is prioritized instead.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :ensure org-plus-contrib
+    :pin org
+    :defer t)
+
+  ;; Ensure ELPA org is prioritized above built-in org.
+  (require 'cl)
+  (setq load-path (remove-if (lambda (x) (string-match-p "org$" x)) load-path))
+#+END_SRC
+
+** =toc-org=
+
+Install the =toc-org= package to automatically generate an updated table of contents.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package toc-org
+    :after org
+    :hook (org-mode . toc-org-enable))
+#+END_SRC
+
 * Appearance
 ** =diminish=
 
@@ -547,31 +606,9 @@ Python setup with [[https://docs.conda.io/en/latest/miniconda.html][miniconda]].
 - Detects and auto-activates the right conda environment for a particular buffer.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package company
-    :hook
-    (after-init . global-company-mode))
 
-  (use-package anaconda-mode
-    :init
-    (add-hook 'python-mode-hook 'anaconda-mode)
-    (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
-    :config
-    (setq python-indent-offset 4
-          python-indent 4
-          python-shell-interpreter "ipython"
-          python-shell-interpreter-args "--single-prompt")
-    (use-package company-anaconda
-      :init
-      (eval-after-load "company"
-        '(add-to-list 'company-backends '(company-anaconda :with company-capf)))))
 
-  (use-package conda
-    :config
-    (setq conda-anaconda-home "/usr/local/Caskroom/miniconda")
-    (setq conda-env-home-directory "/usr/local/Caskroom/miniconda")
-    (conda-env-initialize-interactive-shells)
-    (conda-env-initialize-eshell))
-shell#+END_SRC
+#+END_SRC
 
 * Epilogue
 ** Close =file-name-handler-alist= Expression
