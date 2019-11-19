@@ -3,6 +3,7 @@
 #+STARTUP:     hideall
 #+PROPERTY:     header-args:emacs-lisp     :tangle "~/.emacs.d/init.el"
 
+
 * Performance Optimization
 ** Startup Benchmarking
 
