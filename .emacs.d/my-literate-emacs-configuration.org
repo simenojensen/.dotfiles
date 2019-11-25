@@ -1,0 +1,661 @@
+#+TITLE: My Literate Emacs Configurations
+#+AUTHOR: Simen Omholt-Jensen
+#+STARTUP:     hideall
+#+PROPERTY:     header-args:emacs-lisp     :tangle "~/.emacs.d/init.el"
+
+
+* Table of Contents :TOC_3:
+- [[#performance-optimization][Performance Optimization]]
+  - [[#startup-benchmarking][Startup Benchmarking]]
+  - [[#disable-regexps-when-parsing-filenames-during-startup][Disable regexps when Parsing Filenames during Startup.]]
+  - [[#show-debugging-information][Show Debugging Information]]
+  - [[#increase-garbage-collection-threshold][Increase Garbage Collection Threshold]]
+- [[#package-management][Package Management]]
+  - [[#packageel][=package.el=]]
+  - [[#define-package-repositories][Define Package Repositories]]
+  - [[#security][Security]]
+  - [[#prepare-packages-for-configuration][Prepare Packages for Configuration]]
+  - [[#bootstrap-use-package][Bootstrap =use-package=]]
+  - [[#automatically-update-packages-with-auto-package-update][Automatically Update Packages with =auto-package-update=.]]
+  - [[#prefer-newer-el-files-over-older-elc-files][Prefer Newer =.el= Files Over Older =.elc= Files.]]
+  - [[#automatically-compile-packages-during-startup][Automatically Compile Packages During Startup.]]
+  - [[#require-bind-key-to-use-m-x-describe-personal-keybindings][Require =bind-key= to Use ~M-x~ =describe-personal-keybindings=.]]
+  - [[#diminish][=diminish=]]
+- [[#more-convenient-default-settings][More Convenient Default Settings]]
+- [[#disable-guis][Disable GUIs]]
+- [[#functionality][Functionality]]
+  - [[#window-navigation][Window Navigation]]
+  - [[#ivy--counsel--swiper][=Ivy= / =Counsel= / =Swiper=]]
+    - [[#smart-mx][=smart-mx=]]
+    - [[#ivy-is-an-interactive-interface-for-completion-in-emacs][=Ivy= is an interactive interface for completion in Emacs.]]
+  - [[#undo-tools][Undo tools]]
+  - [[#expand-region][Expand region]]
+  - [[#toggle-line-comment][Toggle Line Comment]]
+  - [[#reload-emacs-configurations][Reload Emacs Configurations]]
+- [[#os-specific-settings][OS Specific Settings]]
+  - [[#macos][macOS]]
+  - [[#windows][Windows]]
+  - [[#linux][Linux]]
+- [[#keybindings][Keybindings]]
+  - [[#which-key][which-key]]
+  - [[#list-of-bindings][List of Bindings]]
+- [[#org-mode][org-mode]]
+  - [[#toc-org][=toc-org=]]
+- [[#appearance][Appearance]]
+  - [[#themes][Themes]]
+- [[#coding][Coding]]
+  - [[#general][General]]
+  - [[#python][Python]]
+- [[#epilogue][Epilogue]]
+  - [[#close-file-name-handler-alist-expression][Close =file-name-handler-alist= Expression]]
+  - [[#sensible-garbage-collection-threshold][Sensible Garbage Collection Threshold]]
+
+* Performance Optimization
+** Startup Benchmarking
+
+First, declare a hook which will benchmark the startup process. It reports how long the it took to start up, and how many garbage collections were performed.
+[[https://blog.d46.us/advanced-emacs-startup/][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (message "Emacs ready in %s with %d garbage collections."
+                       (format "%.2f seconds"
+                               (float-time
+                                (time-subtract after-init-time before-init-time)))
+                       gcs-done)))
+#+END_SRC
+
+** Disable regexps when Parsing Filenames during Startup.
+
+Normally,  =file-name-handler-alist= is set to:
+
+#+BEGIN_SRC :tangle no
+# (("\\`/[^/]*\\'" . tramp-completion-file-name-handler)
+# ("\\`/[^/|:][^/|]*:" . tramp-file-name-handler)
+# ("\\`/:" . file-name-non-special))
+#+END_SRC
+
+This means Emacs has to run these on every =.el= and =.elc= file loaded during startup. By wrapping the Emacs configuration init code,  =(let ((file-name-handler-alist nil)) <init file>)=, the startup load time can be improved. The expression gets closed in the Epilogue.
+[[https://www.reddit.com/r/emacs/comments/3kqt6e/2_easy_little_known_steps_to_speed_up_emacs_start/][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (let ((file-name-handler-alist nil))
+#+END_SRC
+
+** Show Debugging Information
+
+Toggle this to receive more information when encountering startup errors.
+
+#+BEGIN_SRC emacs-lisp
+(setq debug-on-error t)
+#+END_SRC
+
+** Increase Garbage Collection Threshold
+
+When Emacs loads files, packages or libraries, the data is placed in normal storage. When the normal storage runs out, Emacs asks the operating system to allocate more memory. This process is known as garbage collection, and as the default value for Emacs is only ~800kB, it happens quite frequently during startup. As such, we can improve startup performance by increasing this value. In the Epilogue, this value is lowered back down to a sensible default.
+[[https://github.com/zzamboni/dot-emacs/blob/master/init.org#performance-optimization][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+(setq gc-cons-threshold most-positive-fixnum)
+#+End_SRC
+
+* Package Management
+** =package.el=
+
+By default, Emacs 24 or later comes with a built-in package management system (=package.el=). To add further functionality such as adding package repositories and tweaking package configurations, =package.el= needs to be loaded in the =init.el= file during startup.
+[[https://www.gnu.org/software/emacs/manual/html_mono/emacs.html#Package-Installation][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+#+END_SRC
+
+** Define Package Repositories
+
+By default, Emacs comes with the Emacs Lisp Package Archive (ELPA). As the packages need to be FSF-sanctioned, there aren't that many to choose from. By adding the Milkypostman's Emacs Lisp Package Archive ([[https://melpa.org/][MELPA]]), an enormous amount of packages become available. Remember to add ~https~ to urls.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                                   ("melpa" . "https://melpa.org/packages/")
+                                   ("org" . "https://orgmode.org/elpa/")
+                                   ;; ("marmalade" . "https://marmalade-repo.org/packages/")
+                                   ))
+#+END_SRC
+
+** Security
+
+Installing un-signed code into the editor that was downloaded over an unencrypted, unauthenticated transport like HTTP, might lead to installing malware.
+[[https://glyph.twistedmatrix.com/2015/11/editor-malware.html][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (setq tls-checktrust t)
+
+  ;; This snippet is ready to work in both UNIX-like and Windows OS
+  (let ((trustfile
+         (replace-regexp-in-string
+          "\\\\" "/"
+          (replace-regexp-in-string
+           "\n" ""
+           (shell-command-to-string (concat "python3 -m certifi"))))))
+    (setq tls-program
+          (list
+           (format "gnutls-cli%s --x509cafile %s -p %%p %%h"
+                   (if (eq window-system 'w32) ".exe" "") trustfile)))
+    ;; (setq gnutls-verify-error t)
+    (setq gnutls-trustfiles (list trustfile)))
+#+END_SRC
+
+** Prepare Packages for Configuration
+
+- Run =package-initialize= to set up the load-paths and autoloads for installed packages. [[https://www.emacswiki.org/emacs/InstallingPackages][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (package-initialize)
+#+END_SRC
+
+- Set =package-enable-at-startup= to =nil= to prevent superfluous loading of packages. [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Package-Installation.html][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default package-enable-at-startup nil)
+#+END_SRC
+
+** Bootstrap =use-package=
+
+- The =use-package= macro allows cleaner configuration of package loading and installation.
+[[https://github.com/jwiegley/use-package][
+More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (when (not (package-installed-p 'use-package))
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (eval-when-compile
+    (require 'use-package))
+#+END_SRC
+
+- By setting =use-package-always-ensure= to =t=, =use-package= will install packages that are not already installed.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'use-package-ensure)
+  (setq-default use-package-always-ensure t)
+#+END_SRC
+
+** Automatically Update Packages with =auto-package-update=.
+
+[[https://github.com/rranelli/auto-package-update.el][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-package-update
+    :config
+    (setq-default auto-package-update-delete-old-versions t)
+    (setq-default auto-package-update-hide-results t)
+    (auto-package-update-maybe))
+#+END_SRC
+
+** Prefer Newer =.el= Files Over Older =.elc= Files.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default load-prefer-newer t)
+#+END_SRC
+
+** Automatically Compile Packages During Startup.
+[[https://github.com/emacscollective/auto-compile][
+More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-compile
+    :config
+    (auto-compile-on-load-mode)
+  (auto-compile-on-save-mode))
+#+END_SRC
+
+** Require =bind-key= to Use ~M-x~ =describe-personal-keybindings=.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'bind-key)
+#+END_SRC
+
+** =diminish=
+
+The =diminish= package makes it possible to remove clutter from the modeline. The =:diminish= keyword in the =use-package= declarations signify =diminish= invocation.
+[[https://github.com/myrjola/diminish.el][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package diminish)
+#+END_SRC
+
+* More Convenient Default Settings
+
+- Set frame title to =[user@hostname]=
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default frame-title-format (list "[" user-login-name "@" (system-name) "] %b"))
+#+END_SRC
+
+- Display line numbers
+
+#+BEGIN_SRC emacs-lisp
+  (when (version<= "26.0.50" emacs-version )
+    (global-display-line-numbers-mode))
+#+END_SRC
+
+- Don't show the startup message. =inhibit-startup-message= and =inhibit-splash-screen= are aliases for this variable.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default inhibit-startup-screen t)
+#+END_SRC
+
+- Set initial scratch message to =nil=.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default initial-scratch-message nil)
+#+END_SRC
+
+- Place the automatically added 'customize-variables' in =custom.el=.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default custom-file "~/.emacs.d/custom.el")
+  (load custom-file)
+#+END_SRC
+
+- Save automatically generated backup files to =~/.emacs.d/backups/=.
+
+#+BEGIN_SRC emacs-lisp
+  (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+#+END_SRC
+
+- Set the column width to 80 characters.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default fill-column 80)
+#+END_SRC
+
+- Prefer lines to wrap.
+
+#+BEGIN_SRC emacs-lisp
+  (global-visual-line-mode 1)
+#+END_SRC
+
+- Don't use hard tabs.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+END_SRC
+
+- Disable the cursor jump when it moves out of the window.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default scroll-conservatively 101)
+#+END_SRC
+
+- Change =yes-or-no= prompt to =y-or-n=.
+
+#+BEGIN_SRC emacs-lisp
+  (fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+- Delete trailing whitespace when a file is saved.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+END_SRC
+
+- Automatically update buffers if a file content on the disk has changed.
+
+#+BEGIN_SRC emacs-lisp
+  (global-auto-revert-mode t)
+#+END_SRC
+
+- Save window and frame configuration.
+
+#+BEGIN_SRC emacs-lisp
+  (desktop-save-mode t)
+#+END_SRC
+
+- Save position of the point in file.
+
+#+BEGIN_SRC emacs-lisp
+  (save-place-mode t)
+#+END_SRC
+
+- Highlight the line with the point.
+
+#+BEGIN_SRC emacs-lisp
+  (global-hl-line-mode t)
+#+END_SRC
+
+- When saving a file, update the time stamp of the first 8 lines to the current time.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'before-save-hook 'time-stamp)
+#+END_SRC
+
+- Warn when opening a file larger than 100MB
+
+#+BEGIN_SRC emacs-lisp
+  (setq large-file-warning-threshold 100000000)
+#+END_SRC
+
+* Disable GUIs
+
+- Don't show the menu bar.
+
+#+BEGIN_SRC emacs-lisp
+  (menu-bar-mode -1)
+#+END_SRC
+
+- Don't show the tool bar.
+
+#+BEGIN_SRC emacs-lisp
+  (when (fboundp 'tool-bar-mode)
+    (tool-bar-mode -1))
+#+END_SRC
+
+- Don't show the scroll bar.
+
+#+BEGIN_SRC emacs-lisp
+  (when (fboundp 'scroll-bar-mode)
+    (scroll-bar-mode -1))
+#+END_SRC
+
+- Disable the blinking cursor.
+
+#+BEGIN_SRC emacs-lisp
+  (blink-cursor-mode -1)
+#+END_SRC
+
+- Disable the =ring-bell= function.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default ring-bell-function 'ignore)
+#+END_SRC
+
+* Functionality
+** Window Navigation
+
+=ace-window= offers fast window navigation with [[https://github.com/zamansky/using-emacs/blob/master/myinit.org#ace-windows-for-easy-window-switching][customizable]] prompts.
+[[https://github.com/abo-abo/ace-window][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-window
+    :init
+    (custom-set-faces
+     '(aw-leading-char-face
+       ((t (:inherit ace-jump-face-foreground :height 3.0)))))
+    :bind
+    ("C-x o" . ace-window))
+#+END_SRC
+
+** =Ivy= / =Counsel= / =Swiper=
+*** =smart-mx=
+
+=smart M-x= suggests ~M-x~ commands based on recency and frequency. Used by Counsel indirectely.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package smex)
+#+END_SRC
+
+*** =Ivy= is an interactive interface for completion in Emacs.
+[[https://oremacs.com/swiper/][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package counsel
+    :bind
+    ("C-x C-f" . counsel-find-file)
+    ("<f1> f" . counsel-describe-function)
+    ("<f1> v" . counsel-describe-variable)
+    ("<f1> l" . counsel-find-library)
+    ("<f1> i" . counsel-info-lookup-symbol)
+    ("<f1> u" . counsel-unicode-char)
+    ("<f1> j" . counsel-set-variable)
+    ("M-x" . counsel-M-x))
+
+  (use-package ivy
+    :diminish
+    :bind
+    ("C-x b" . ivy-switch-buffer)
+    :config
+    (ivy-mode 1)
+    (setq ivy-initial-inputs-alist nil)
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-count-format "(%d/%d) "))
+
+  (use-package swiper
+      :bind
+      ("C-s" . swiper-isearch))
+#+END_SRC
+
+** Undo tools
+
+=undo-tree= visualises undo history as a tree for easy navigation.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package undo-tree
+    :diminish
+    :bind ("C-x u" . undo-tree-visualize)
+    :config
+    (global-undo-tree-mode))
+#+END_SRC
+** Expand region
+
+=expand-region= expands your marked region around the cursor semantically depending on mode.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package expand-region
+    :bind ("C-=" . er/expand-region))
+#+END_SRC
+
+** Toggle Line Comment
+
+Comment or uncomment the current line. Bind to ~C-;~.
+
+#+BEGIN_SRC emacs-lisp
+(defun my/toggle-comment-on-line ()
+  (interactive)
+  (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
+
+(bind-key "C-;" 'my/toggle-comment-on-line)
+#+END_SRC
+
+** Reload Emacs Configurations
+
+This function reloads =~/.emacs.d/init.el=.
+
+#+BEGIN_SRC emacs-lisp
+  (defun my/reload-emacs-configuration ()
+    "Reloads init.el."
+    (interactive)
+    (load-file "~/.emacs.d/init.el"))
+#+END_SRC
+
+* OS Specific Settings
+
+Detect which OS Emacs is being run on, and configure keybindings accordingly.
+
+#+BEGIN_SRC emacs-lisp
+  (cond
+#+END_SRC
+
+** macOS
+
+#+BEGIN_SRC emacs-lisp
+  ((eq system-type 'darwin)
+#+END_SRC
+
+By setting the ~M~ to ~⌘~, ~A~ to ~^~ (left option)  and ~S~ to ~^~ (right option), we can emulate some of the macOS keyboard configurations.
+
+#+BEGIN_SRC emacs-lisp
+  (customize-set-variable 'mac-command-modifier 'meta)
+  (customize-set-variable 'mac-option-modifier 'alt)
+  (customize-set-variable 'mac-right-option-modifier 'super)
+#+END_SRC
+
+Next, we are binding ~M-=~ to increase the font size, and ~M--~ to decrease the font size.
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "M-+" 'text-scale-increase)
+  (bind-key "M--" 'text-scale-decrease)
+#+END_SRC
+
+Further, a function borrowed from [[https://zzamboni.org/post/my-emacs-configuration-with-commentary/#mac][zzamboni]] is implemented and bound to ~M-0~.
+
+#+BEGIN_SRC emacs-lisp
+  (defun my/text-scale-reset ()
+    "Reset text scaling to default"
+    (interactive)
+    (text-scale-set 0))
+
+  (bind-key "M-0" 'my/text-scale-reset)
+#+END_SRC
+
+Lastly, we make sure the =$PATH= is loaded from the default shell.
+[[https://github.com/purcell/exec-path-from-shell][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package exec-path-from-shell
+    :defer nil
+    :config
+    (exec-path-from-shell-initialize))
+  )
+#+END_SRC
+
+** Windows
+
+Not implemented.
+
+#+BEGIN_SRC emacs-lisp
+  ((eq system-type 'windows-nt))
+#+END_SRC
+
+** Linux
+
+Not Implemented
+
+#+BEGIN_SRC emacs-lisp
+  ((eq system-type 'gnu/linux))
+ )
+#+END_SRC
+
+* Keybindings
+** which-key
+
+The =which-key= package automatically displays potential command information as command keys are typed. This makes it easy to explore Emacs functionality.
+[[https://github.com/justbur/emacs-which-key][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :diminish which-key-mode
+    :config
+    (setq which-key-idle-delay 0.5)
+    (which-key-mode))
+#+END_SRC
+
+** List of Bindings
+
+- Go to line number.
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "M-g" 'goto-line)
+#+END_SRC
+
+- Create new frame (emulate macOS' "new window" shortcut).
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "M-n" 'make-frame)
+#+END_SRC
+
+- Focus next frame (emulate macOS' "focus next window" shortcut).
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "M-`" 'other-frame)
+#+END_SRC
+
+- Close frame (emulate macOS' "close window" shortcut). =kill-ring-save= is remapped to ~A-w~.
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "M-w" 'delete-frame)
+  (bind-key "A-w" 'kill-ring-save)
+#+END_SRC
+
+- =crux= sets ~C-a~ to move to the first non-whitespace character on a line, and then to toggle between that and the beginning of the line.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package crux
+    :bind ("C-a" . crux-move-beginning-of-line))
+#+END_SRC
+
+* org-mode
+
+Install a newer version of org-mode. Further, remove org directories from the load path, to ensure this version is prioritized instead.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :ensure org-plus-contrib
+    :pin org
+    :defer t)
+
+  ;; Ensure ELPA org is prioritized above built-in org.
+  (require 'cl)
+  (setq load-path (remove-if (lambda (x) (string-match-p "org$" x)) load-path))
+#+END_SRC
+
+** =toc-org=
+
+Install the =toc-org= package to automatically generate an updated table of contents.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package toc-org
+    :after org
+    :hook (org-mode . toc-org-enable))
+#+END_SRC
+
+* Appearance
+** Themes
+
+#+BEGIN_SRC emacs-lisp
+  ;;(use-package solarized-theme)
+  ;;(use-package darktooth-theme)
+  ;;(use-package kaolin-themes)
+  (use-package gruvbox-theme)
+  (load-theme 'gruvbox)
+#+END_SRC
+
+* Coding
+** General
+
+- =iedit= allows you to edit multiple occurrences of a symbol or region.
+[[https://www.emacswiki.org/emacs/Iedit][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package iedit
+    :bind
+    ("M-;" . iedit-mode))
+#+END_SRC
+
+** Python
+
+Use =anaconda-mode=.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package anaconda-mode
+    :config
+    :hook ((python-mode . anaconda-mode)
+           (python-mode . anaconda-eldoc-mode)))
+#+END_SRC
+
+* Epilogue
+** Close =file-name-handler-alist= Expression
+
+Here, the =file-name-handler-alist= expression gets closed out.
+
+#+BEGIN_SRC emacs-lisp
+  )
+#+END_SRC
+
+** Sensible Garbage Collection Threshold
+
+Here, the =gc-cons-threshold= is set to a sensible value for normal use.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gc-cons-threshold (* 2 1000 1000))
+#+END_SRC
