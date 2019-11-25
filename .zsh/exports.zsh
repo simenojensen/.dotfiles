@@ -108,4 +108,3 @@ fi
 unset __conda_setup
 conda activate py3
 # <<< conda initialize <<<
-

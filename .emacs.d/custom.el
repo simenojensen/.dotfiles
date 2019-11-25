@@ -15,7 +15,7 @@
  '(ns-right-alternate-modifier (quote super))
  '(package-selected-packages
    (quote
-    (py-autopep8 company-anaconda anaconda-mode company-jedi company company-mode jedi-core conda iedit gruvbox-theme diminish which-key exec-path-from-shell counsel ace-window auto-compile auto-package-update use-package))))
+    (darktooth-theme kaolin-themes kaolin-theme expand-region undo-tree smex crux org-plus-contrib py-autopep8 company-anaconda anaconda-mode company-jedi company company-mode jedi-core conda iedit gruvbox-theme diminish which-key exec-path-from-shell counsel ace-window auto-compile auto-package-update use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

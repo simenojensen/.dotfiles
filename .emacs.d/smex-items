@@ -1,0 +1,18 @@
+
+;; ----- smex-history -----
+(
+ shell
+ comment-region
+ run-python
+ cd
+ 5x5
+ arp
+ dbx
+)
+
+;; ----- smex-data -----
+(
+ (run-python . 1)
+ (comment-region . 1)
+ (shell . 1)
+)

@@ -20,11 +20,16 @@
   - [[#prefer-newer-el-files-over-older-elc-files][Prefer Newer =.el= Files Over Older =.elc= Files.]]
   - [[#automatically-compile-packages-during-startup][Automatically Compile Packages During Startup.]]
   - [[#require-bind-key-to-use-m-x-describe-personal-keybindings][Require =bind-key= to Use ~M-x~ =describe-personal-keybindings=.]]
+  - [[#diminish][=diminish=]]
 - [[#more-convenient-default-settings][More Convenient Default Settings]]
 - [[#disable-guis][Disable GUIs]]
 - [[#functionality][Functionality]]
   - [[#window-navigation][Window Navigation]]
   - [[#ivy--counsel--swiper][=Ivy= / =Counsel= / =Swiper=]]
+    - [[#smart-mx][=smart-mx=]]
+    - [[#ivy-is-an-interactive-interface-for-completion-in-emacs][=Ivy= is an interactive interface for completion in Emacs.]]
+  - [[#undo-tools][Undo tools]]
+  - [[#expand-region][Expand region]]
   - [[#toggle-line-comment][Toggle Line Comment]]
   - [[#reload-emacs-configurations][Reload Emacs Configurations]]
 - [[#os-specific-settings][OS Specific Settings]]
@@ -37,13 +42,10 @@
 - [[#org-mode][org-mode]]
   - [[#toc-org][=toc-org=]]
 - [[#appearance][Appearance]]
-  - [[#diminish][=diminish=]]
   - [[#themes][Themes]]
 - [[#coding][Coding]]
   - [[#general][General]]
   - [[#python][Python]]
-    - [[#miniconda-installation][Miniconda installation]]
-    - [[#condael][=conda.el=]]
 - [[#epilogue][Epilogue]]
   - [[#close-file-name-handler-alist-expression][Close =file-name-handler-alist= Expression]]
   - [[#sensible-garbage-collection-threshold][Sensible Garbage Collection Threshold]]
@@ -213,6 +215,15 @@ More Information]]
   (require 'bind-key)
 #+END_SRC
 
+** =diminish=
+
+The =diminish= package makes it possible to remove clutter from the modeline. The =:diminish= keyword in the =use-package= declarations signify =diminish= invocation.
+[[https://github.com/myrjola/diminish.el][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package diminish)
+#+END_SRC
+
 * More Convenient Default Settings
 
 - Set frame title to =[user@hostname]=
@@ -319,6 +330,12 @@ More Information]]
   (add-hook 'before-save-hook 'time-stamp)
 #+END_SRC
 
+- Warn when opening a file larger than 100MB
+
+#+BEGIN_SRC emacs-lisp
+  (setq large-file-warning-threshold 100000000)
+#+END_SRC
+
 * Disable GUIs
 
 - Don't show the menu bar.
@@ -370,8 +387,15 @@ More Information]]
 #+END_SRC
 
 ** =Ivy= / =Counsel= / =Swiper=
+*** =smart-mx=
 
-=Ivy= is an interactive interface for completion in Emacs.
+=smart M-x= suggests ~M-x~ commands based on recency and frequency. Used by Counsel indirectely.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package smex)
+#+END_SRC
+
+*** =Ivy= is an interactive interface for completion in Emacs.
 [[https://oremacs.com/swiper/][More Information]]
 
 #+BEGIN_SRC emacs-lisp
@@ -387,16 +411,38 @@ More Information]]
     ("M-x" . counsel-M-x))
 
   (use-package ivy
+    :diminish
     :bind
     ("C-x b" . ivy-switch-buffer)
     :config
     (ivy-mode 1)
+    (setq ivy-initial-inputs-alist nil)
     (setq ivy-use-virtual-buffers t)
     (setq ivy-count-format "(%d/%d) "))
 
   (use-package swiper
       :bind
       ("C-s" . swiper-isearch))
+#+END_SRC
+
+** Undo tools
+
+=undo-tree= visualises undo history as a tree for easy navigation.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package undo-tree
+    :diminish
+    :bind ("C-x u" . undo-tree-visualize)
+    :config
+    (global-undo-tree-mode))
+#+END_SRC
+** Expand region
+
+=expand-region= expands your marked region around the cursor semantically depending on mode.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package expand-region
+    :bind ("C-=" . er/expand-region))
 #+END_SRC
 
 ** Toggle Line Comment
@@ -447,7 +493,7 @@ By setting the ~M~ to ~⌘~, ~A~ to ~^~ (left option)  and ~S~ to ~^~ (right opt
 Next, we are binding ~M-=~ to increase the font size, and ~M--~ to decrease the font size.
 
 #+BEGIN_SRC emacs-lisp
-  (bind-key "M-=" 'text-scale-increase)
+  (bind-key "M-+" 'text-scale-increase)
   (bind-key "M--" 'text-scale-decrease)
 #+END_SRC
 
@@ -531,6 +577,13 @@ The =which-key= package automatically displays potential command information as 
   (bind-key "A-w" 'kill-ring-save)
 #+END_SRC
 
+- =crux= sets ~C-a~ to move to the first non-whitespace character on a line, and then to toggle between that and the beginning of the line.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package crux
+    :bind ("C-a" . crux-move-beginning-of-line))
+#+END_SRC
+
 * org-mode
 
 Install a newer version of org-mode. Further, remove org directories from the load path, to ensure this version is prioritized instead.
@@ -557,15 +610,6 @@ Install the =toc-org= package to automatically generate an updated table of cont
 #+END_SRC
 
 * Appearance
-** =diminish=
-
-The =diminish= package makes it possible to remove clutter from the modeline. The =:diminish= keyword in the =use-package= declarations signify =diminish= invocation.
-[[https://github.com/myrjola/diminish.el][More Information]]
-
-#+BEGIN_SRC emacs-lisp
-  (use-package diminish)
-#+END_SRC
-
 ** Themes
 
 #+BEGIN_SRC emacs-lisp
@@ -590,24 +634,13 @@ The =diminish= package makes it possible to remove clutter from the modeline. Th
 
 ** Python
 
-Python setup with [[https://docs.conda.io/en/latest/miniconda.html][miniconda]].
-
-*** Miniconda installation
-
-- =$brew cask install miniconda=
-- =$conda init "$(basename "${SHELL}")=
-- =$conda update conda=
-- =$conda create -n py3=
-- =$conda activate py3=
-
-*** =conda.el=
-
-- Makes Python shells, interactive shells, eshell, anaconda-mode, and so on aware of conda environments
-- Detects and auto-activates the right conda environment for a particular buffer.
+Use =anaconda-mode=.
 
 #+BEGIN_SRC emacs-lisp
-
-
+  (use-package anaconda-mode
+    :config
+    :hook ((python-mode . anaconda-mode)
+           (python-mode . anaconda-eldoc-mode)))
 #+END_SRC
 
 * Epilogue

@@ -1,0 +1,24 @@
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(conda-anaconda-home "/usr/local/Caskroom/miniconda")
+ '(custom-safe-themes
+   (quote
+    ("1436d643b98844555d56c59c74004eb158dc85fc55d2e7205f8d9b8c860e177f" default)))
+ '(mac-command-modifier (quote meta))
+ '(mac-option-modifier (quote alt))
+ '(mac-right-option-modifier (quote super))
+ '(ns-alternate-modifier (quote alt))
+ '(ns-command-modifier (quote meta))
+ '(ns-right-alternate-modifier (quote super))
+ '(package-selected-packages
+   (quote
+    (kaolin-themes kaolin-theme expand-region undo-tree smex crux org-plus-contrib py-autopep8 company-anaconda anaconda-mode company-jedi company company-mode jedi-core conda iedit gruvbox-theme diminish which-key exec-path-from-shell counsel ace-window auto-compile auto-package-update use-package))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0)))))

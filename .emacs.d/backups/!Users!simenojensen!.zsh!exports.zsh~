@@ -1,0 +1,110 @@
+# Preferred editor for local and remote sessions
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='emacs'
+else
+  export EDITOR='emacs'
+fi
+
+# ncurses
+# export PATH="/usr/local/opt/ncurses/bin:$PATH"
+# export LDFLAGS="-L/usr/local/opt/ncurses/lib"
+# export CPPFLAGS="-I/usr/local/opt/ncurses/include"
+
+# coreutils
+export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+
+# gettext
+# export PATH="/usr/local/opt/gettext/bin:$PATH"
+# export LDFLAGS="-L/usr/local/opt/gettext/lib"
+# export CPPFLAGS="-I/usr/local/opt/gettext/include"
+
+# libffi
+# export LDFLAGS="-L/usr/local/opt/libffi/lib"
+
+# libressl
+export PATH="/usr/local/opt/libressl/bin:$PATH"
+# export LDFLAGS="-L/usr/local/opt/libressl/lib"
+# export CPPFLAGS="-I/usr/local/opt/libressl/include"
+
+# openssl@1.1
+# A CA file has been bootstrapped using certificates from the system
+# keychain. To add additional certificates, place .pem files in
+#  /usr/local/etc/openssl@1.1/certs
+# and run
+# /usr/local/opt/openssl@1.1/bin/c_rehash
+# export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
+# export LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"
+# export CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"
+
+# imagemagick@6
+export PATH="/usr/local/opt/imagemagick@6/bin:$PATH"
+# export LDFLAGS="-L/usr/local/opt/imagemagick@6/lib"
+# export CPPFLAGS="-I/usr/local/opt/imagemagick@6/include"
+
+# sqlite
+export PATH="/usr/local/opt/sqlite/bin:$PATH"
+# export LDFLAGS="-L/usr/local/opt/sqlite/lib"
+# export CPPFLAGS="-I/usr/local/opt/sqlite/include"
+
+# gnu-sed
+export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
+
+# icu4c
+# export PATH="/usr/local/opt/icu4c/bin:$PATH"
+# export PATH="/usr/local/opt/icu4c/sbin:$PATH"
+# export LDFLAGS="-L/usr/local/opt/icu4c/lib"
+# export CPPFLAGS="-I/usr/local/opt/icu4c/include"
+
+# readline
+# export LDFLAGS="-L/usr/local/opt/readline/lib"
+# export CPPFLAGS="-I/usr/local/opt/readline/include"
+
+# postgresql
+# To migrate existing data from a previous major version of PostgreSQL run:
+# brew postgresql-upgrade-database
+# To have launchd start postgresql now and restart at login:
+#  brew services start postgresql
+# Or, if you don't want/need a background service you can just run:
+#  pg_ctl -D /usr/local/var/postgres start
+
+# Z
+. /usr/local/etc/profile.d/z.sh
+
+# zsh-autosuggestions
+source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# zsh-autocompletions
+fpath=(/usr/local/share/zsh-completions $fpath)
+# You may also need to force rebuild `zcompdump`:
+# rm -f ~/.zcompdump; compinit
+# Additionally, if you receive "zsh compinit: insecure directories" warnings when attempting
+# to load these completions, you may need to run this:
+# chmod go-w '/usr/local/share'
+
+# zsh-history-substring-search
+source /usr/local/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+# zsh-syntax-highlighting
+source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# If you receive "highlighters directory not found" error message,
+# you may need to add the following to your .zshenv:
+# export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=/usr/local/share/zsh-syntax-highlighting/highlighters
+
+# openVPN
+export PATH="/usr/local/opt/openvpn/sbin:$PATH"
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/usr/local/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/usr/local/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
+        . "/usr/local/Caskroom/miniconda/base/etc/profile.d/conda.sh"
+    else
+        export PATH="/usr/local/Caskroom/miniconda/base/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+

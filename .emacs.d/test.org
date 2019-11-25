@@ -1,0 +1,29 @@
+
+
+#+BEGIN_SRC :tangle no
+  (use-package company
+    :hook
+    (after-init . global-company-mode))
+
+  (use-package anaconda-mode
+    :init
+    (add-hook 'python-mode-hook 'anaconda-mode)
+    (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
+    :config
+    (setq python-indent-offset 4
+          python-indent 4
+          python-shell-interpreter "ipython"
+          python-shell-interpreter-args "--single-prompt")
+    (use-package company-anaconda
+      :init
+      (eval-after-load "company"
+        '(add-to-list 'company-backends '(company-anaconda :with company-capf)))))
+
+  (use-package conda
+    :config
+    (setq conda-anaconda-home "/usr/local/Caskroom/miniconda")
+    (setq conda-env-home-directory "/usr/local/Caskroom/miniconda")
+    (conda-env-initialize-interactive-shells)
+    (conda-env-initialize-eshell))
+shell#+END_SRC
+

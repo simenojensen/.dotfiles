@@ -36,23 +36,6 @@
   ;; (setq gnutls-verify-error t)
   (setq gnutls-trustfiles (list trustfile)))
 
-(defun check-tls-config ()
-  "Check for correctness in the TLS configuration for Emacs."
-  (interactive)
-  (let ((bad-hosts
-         (cl-loop for bad
-               in `("https://wrong.host.badssl.com/"
-                    "https://self-signed.badssl.com/")
-               if (condition-case e
-                      (url-retrieve
-                       bad (lambda (retrieved) t))
-                    (error nil))
-               collect bad)))
-    (if bad-hosts
-        (error (format "TLS misconfigured; retrieved %s ok" bad-hosts))
-      (url-retrieve "https://badssl.com"
-                    (lambda (retrieved) t)))))
-
 (package-initialize)
 
 (setq-default package-enable-at-startup nil)
@@ -81,7 +64,12 @@
 
 (require 'bind-key)
 
+(use-package diminish)
+
 (setq-default frame-title-format (list "[" user-login-name "@" (system-name) "] %b"))
+
+(when (version<= "26.0.50" emacs-version )
+  (global-display-line-numbers-mode))
 
 (setq-default inhibit-startup-screen t)
 
@@ -114,6 +102,8 @@
 
 (add-hook 'before-save-hook 'time-stamp)
 
+(setq large-file-warning-threshold 100000000)
+
 (menu-bar-mode -1)
 
 (when (fboundp 'tool-bar-mode)
@@ -134,6 +124,8 @@
   :bind
   ("C-x o" . ace-window))
 
+(use-package smex)
+
 (use-package counsel
   :bind
   ("C-x C-f" . counsel-find-file)
@@ -146,16 +138,27 @@
   ("M-x" . counsel-M-x))
 
 (use-package ivy
+  :diminish
   :bind
   ("C-x b" . ivy-switch-buffer)
   :config
   (ivy-mode 1)
+  (setq ivy-initial-inputs-alist nil)
   (setq ivy-use-virtual-buffers t)
   (setq ivy-count-format "(%d/%d) "))
 
 (use-package swiper
     :bind
     ("C-s" . swiper-isearch))
+
+(use-package undo-tree
+  :diminish
+  :bind ("C-x u" . undo-tree-visualize)
+  :config
+  (global-undo-tree-mode))
+
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))
 
 (defun my/toggle-comment-on-line ()
   (interactive)
@@ -176,7 +179,7 @@
 (customize-set-variable 'mac-option-modifier 'alt)
 (customize-set-variable 'mac-right-option-modifier 'super)
 
-(bind-key "M-=" 'text-scale-increase)
+(bind-key "M-+" 'text-scale-increase)
 (bind-key "M--" 'text-scale-decrease)
 
 (defun my/text-scale-reset ()
@@ -212,7 +215,21 @@
 (bind-key "M-w" 'delete-frame)
 (bind-key "A-w" 'kill-ring-save)
 
-(use-package diminish)
+(use-package crux
+  :bind ("C-a" . crux-move-beginning-of-line))
+
+(use-package org
+  :ensure org-plus-contrib
+  :pin org
+  :defer t)
+
+;; Ensure ELPA org is prioritized above built-in org.
+(require 'cl)
+(setq load-path (remove-if (lambda (x) (string-match-p "org$" x)) load-path))
+
+(use-package toc-org
+  :after org
+  :hook (org-mode . toc-org-enable))
 
 ;;(use-package solarized-theme)
 ;;(use-package darktooth-theme)
@@ -224,30 +241,10 @@
   :bind
   ("M-;" . iedit-mode))
 
-(use-package company
-  :hook
-  (after-init . global-company-mode))
-
 (use-package anaconda-mode
-  :init
-  (add-hook 'python-mode-hook 'anaconda-mode)
-  (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
   :config
-  (setq python-indent-offset 4
-        python-indent 4
-        python-shell-interpreter "ipython"
-        python-shell-interpreter-args "--single-prompt")
-  (use-package company-anaconda
-    :init
-    (eval-after-load "company"
-      '(add-to-list 'company-backends '(company-anaconda :with company-capf)))))
-
-(use-package conda
-  :config
-  (setq conda-anaconda-home "/usr/local/Caskroom/miniconda")
-  (setq conda-env-home-directory "/usr/local/Caskroom/miniconda")
-  (conda-env-initialize-interactive-shells)
-  (conda-env-initialize-eshell))
+  :hook ((python-mode . anaconda-mode)
+         (python-mode . anaconda-eldoc-mode)))
 
 )
 

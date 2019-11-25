@@ -1,0 +1,187 @@
+;; -*- mode: emacs-lisp; coding: emacs-mule; -*-
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Fri Nov 22 09:35:23 2019
+;; Desktop file format version 208
+;; Emacs version 26.3
+
+;; Global section:
+(setq desktop-saved-frameset [frameset 1 (24023 40395 394903 0) (desktop . "208") "simenojensen@Simens-MacBook-Pro-2.local" nil nil ((((minibuffer . t) (tty-type . "xterm-256color") (tty . "/dev/tty") (display-type . color) (background-mode . dark) (foreground-color . "#ffffaf") (cursor-color . "#ffffaf") (menu-bar-lines . 0) (tool-bar-lines . 0) (vertical-scroll-bars) (background-color . "#262626") (font . "tty") (height . 58) (width . 270) (modeline . t) (unsplittable) (frameset--id . "81B9-8205-CC9B-1833") (frameset--mini t)) ((min-height . 4) (min-width . 10) (min-height-ignore . 2) (min-width-ignore . 2) (min-height-safe . 1) (min-width-safe . 2) (min-pixel-height . 4) (min-pixel-width . 10) (min-pixel-height-ignore . 2) (min-pixel-width-ignore . 2) (min-pixel-height-safe . 1) (min-pixel-width-safe . 2)) leaf (pixel-width . 270) (pixel-height . 57) (total-width . 270) (total-height . 57) (normal-height . 1.0) (normal-width . 1.0) (buffer "known_hosts" (selected . t) (hscroll . 0) (fringes 0 0 nil) (margins nil) (scroll-bars nil 0 t nil 0 t) (vscroll . 0) (dedicated) (point . 4578) (start . 699))))])
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring nil)
+(setq regexp-search-ring nil)
+(setq register-alist nil)
+(setq file-name-history '("/Users/simenojensen/.emacs.d/my-literate-emacs-configuration.org" "/Users/simenojensen/.eman" "/Users/simenojensen/Desktop/" "/Users/simenojensen/Desktop/raalabs/scripts/OneOp_Sensor-KPI/" "/Users/simenojensen/Desktop/raalabs/scripts/routing_table.py" "/Users/simenojensen/.emacs.d/" "/Users/simenojensen/Desktop/raalabs/scripts/OneOp_Connectivity-Tool/" "/usr/local/Caskroom/miniconda/base/" "/usr/local/Caskroom/miniconda/base/envs/py3/" "/usr/local/Caskroom/miniconda/" "/usr/local/Caskroom/"))
+
+;; Buffer section -- buffers listed in same order as in buffer list:
+(desktop-create-buffer 208
+  "/Users/simenojensen/.ssh/known_hosts"
+  "known_hosts"
+  'fundamental-mode
+  '(visual-line-mode override-global-mode auto-compile-on-load-mode global-auto-revert-mode which-key-mode ivy-mode company-mode undo-tree-mode)
+  4578
+  '(nil nil)
+  nil
+  nil
+  '((buffer-display-time 24023 40367 775912 0) (buffer-file-coding-system . undecided-unix) (truncate-lines))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  "/Users/simenojensen/.emacs.d/my-literate-emacs-configuration.org"
+  "my-literate-emacs-configuration.org"
+  'org-mode
+  '(visual-line-mode eldoc-mode override-global-mode auto-compile-on-load-mode global-auto-revert-mode which-key-mode ivy-mode company-mode undo-tree-mode)
+  18484
+  '(8901 nil)
+  nil
+  nil
+  '((buffer-display-time 24023 40367 657997 0) (buffer-file-coding-system . utf-8-unix) (truncate-lines))
+  '((mark-ring (8901 18039 14075 14068 14068 14068 14068 14068 14065 14065 14065 14065 14065 14065 11554 19035))))
+
+(desktop-create-buffer 208
+  "/Users/simenojensen/.emacs.d/elpa/org-plus-contrib-20191111/org-loaddefs.el"
+  "org-loaddefs.el"
+  'emacs-lisp-mode
+  '(visual-line-mode eldoc-mode override-global-mode auto-compile-mode auto-compile-on-load-mode global-auto-revert-mode which-key-mode ivy-mode undo-tree-mode)
+  138782
+  '(nil nil)
+  nil
+  nil
+  '((buffer-display-time 24023 38821 517283 78000) (buffer-file-coding-system . utf-8-unix) (truncate-lines))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  nil
+  "Desktop"
+  'dired-mode
+  '(visual-line-mode override-global-mode auto-compile-on-load-mode global-auto-revert-mode which-key-mode ivy-mode company-mode)
+  539
+  '(nil nil)
+  t
+  '("/Users/simenojensen/Desktop/")
+  '((buffer-display-time 24023 38803 251178 338000) (truncate-lines))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  "/Users/simenojensen/.zsh/exports.zsh"
+  "exports.zsh"
+  'sh-mode
+  '(visual-line-mode override-global-mode auto-compile-on-load-mode global-auto-revert-mode which-key-mode ivy-mode undo-tree-mode)
+  3677
+  '(nil nil)
+  nil
+  nil
+  '((buffer-display-time 24023 38789 625658 338000) (buffer-file-coding-system . undecided-unix) (truncate-lines))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  "/Users/simenojensen/Desktop/raalabs/scripts/OneOp_Sensor-KPI/streaming_kpi.py"
+  "streaming_kpi.py"
+  'python-mode
+  '(visual-line-mode eldoc-mode override-global-mode auto-compile-on-load-mode global-auto-revert-mode which-key-mode ivy-mode company-mode undo-tree-mode anaconda-mode anaconda-eldoc-mode)
+  53
+  '(34 nil)
+  nil
+  nil
+  '((tab-width . 8) (indent-tabs-mode) (buffer-display-time 24023 38770 307929 248000) (buffer-file-coding-system . undecided-unix) (truncate-lines))
+  '((mark-ring (662 1631))))
+
+(desktop-create-buffer 208
+  nil
+  "OneOp_Sensor-KPI"
+  'dired-mode
+  '(visual-line-mode override-global-mode auto-compile-on-load-mode global-auto-revert-mode which-key-mode ivy-mode company-mode)
+  746
+  '(nil nil)
+  t
+  '("/Users/simenojensen/Desktop/raalabs/scripts/OneOp_Sensor-KPI/")
+  '((buffer-display-time 24023 38210 34174 749000) (truncate-lines))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  "/Users/simenojensen/Desktop/raalabs/scripts/routing_table.py"
+  "routing_table.py"
+  'python-mode
+  '(visual-line-mode eldoc-mode override-global-mode auto-compile-on-load-mode global-auto-revert-mode which-key-mode ivy-mode company-mode undo-tree-mode anaconda-mode anaconda-eldoc-mode)
+  2885
+  '(2362 nil)
+  nil
+  nil
+  '((tab-width . 8) (indent-tabs-mode) (buffer-display-time 24023 38198 707959 749000) (buffer-file-coding-system . utf-8-unix) (truncate-lines))
+  '((mark-ring (2468 2403 1567 261))))
+
+(desktop-create-buffer 208
+  "/Users/simenojensen/.emacs.d/anaconda-mode/0.1.13/jedi-0.15.1-py3.7.egg/jedi/third_party/typeshed/stdlib/2/__builtin__.pyi"
+  "__builtin__.pyi"
+  'python-mode
+  '(visual-line-mode eldoc-mode override-global-mode auto-compile-on-load-mode global-auto-revert-mode which-key-mode ivy-mode undo-tree-mode anaconda-mode anaconda-eldoc-mode)
+  2670
+  '(nil nil)
+  nil
+  nil
+  '((tab-width . 8) (indent-tabs-mode) (buffer-display-time 24023 36829 231653 749000) (buffer-file-coding-system . undecided-unix) (truncate-lines))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  nil
+  ".emacs.d"
+  'dired-mode
+  '(visual-line-mode override-global-mode auto-compile-on-load-mode global-auto-revert-mode which-key-mode ivy-mode company-mode)
+  886
+  '(nil nil)
+  t
+  '("/Users/simenojensen/.emacs.d/")
+  '((buffer-display-time 24023 36736 944934 697000) (truncate-lines))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  nil
+  "scripts"
+  'dired-mode
+  '(visual-line-mode override-global-mode auto-compile-on-load-mode global-auto-revert-mode which-key-mode ivy-mode company-mode)
+  669
+  '(nil nil)
+  t
+  '("/Users/simenojensen/Desktop/raalabs/scripts/")
+  '((buffer-display-time 24022 63934 64581 32000) (truncate-lines))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  nil
+  "raalabs"
+  'dired-mode
+  '(visual-line-mode override-global-mode auto-compile-on-load-mode global-auto-revert-mode which-key-mode ivy-mode company-mode)
+  726
+  '(nil nil)
+  t
+  '("/Users/simenojensen/Desktop/raalabs/")
+  '((buffer-display-time 24022 63933 632840 32000) (truncate-lines))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  "/Users/simenojensen/Desktop/raalabs/scripts/OneOp_Connectivity-Tool/Pingstats.py"
+  "Pingstats.py"
+  'python-mode
+  '(visual-line-mode eldoc-mode override-global-mode auto-compile-on-load-mode global-auto-revert-mode which-key-mode ivy-mode company-mode undo-tree-mode anaconda-mode anaconda-eldoc-mode)
+  1197
+  '(1683 nil)
+  nil
+  nil
+  '((tab-width . 8) (indent-tabs-mode) (buffer-display-time 24022 59754 713309 879000) (buffer-file-coding-system . utf-8-unix) (truncate-lines))
+  '((mark-ring (114))))
+
+(desktop-create-buffer 208
+  nil
+  "OneOp_Connectivity-Tool"
+  'dired-mode
+  '(visual-line-mode override-global-mode auto-compile-on-load-mode global-auto-revert-mode which-key-mode ivy-mode company-mode)
+  407
+  '(nil nil)
+  t
+  '("/Users/simenojensen/Desktop/raalabs/scripts/OneOp_Connectivity-Tool/")
+  '((buffer-display-time 24022 59754 177509 879000) (truncate-lines))
+  '((mark-ring nil)))
+

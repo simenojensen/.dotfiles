@@ -1,0 +1,117 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Oct 28 22:14:48 2019
+
+@author: gtvetmarken
+"""
+
+from airtable import Airtable
+from datetime import datetime
+import multiprocessing as mp
+from textwrap import dedent
+import pandas as pd
+import pingparsing
+import subprocess
+import os
+import sys
+import getopt
+
+def pinger( job_q, results_q ):
+    DEVNULL = open(os.devnull,'w')
+    while True:
+        ip = job_q.get()
+        if ip is None: break
+
+        try:
+            subprocess.check_call(['ping','-c 3',ip], stdout=DEVNULL)
+            results_q.put(ip)
+        except:
+            pass
+
+def Stats(job_ip, job_reply ):
+
+    p = subprocess.check_output(["ping", "-c", "4", ip])
+
+    output = p.decode("utf-8")
+    lines = output.split('\n')
+    job_reply.put(lines)
+
+
+
+def processStats(pingReply):
+    parser = pingparsing.PingParsing()
+    stats = parser.parse(dedent(pingReply))
+
+    return stats.as_dict()
+
+
+def updateVPNStatus(ip_list):
+    """Update the VPN connectivity status in the "Operational Status"
+    in the "Fleet EDGE Implementation" base. Set ['YES'] or ['NO']
+    depending on ips in ip_list
+    """
+
+    airtable = Airtable('app7JMgXAkyijlSyd', 'Operational Status', api_key=os.environ['AIRTABLE_API_KEY'])
+    records = airtable.get_all(maxRecords=50)
+    df = pd.DataFrame.from_records((r['fields'] for r in records))
+    df.VPN.dropna(inplace=True)
+
+    for vpn in df.VPN.values:
+        if vpn in ip_list:
+            airtable.update_by_field('VPN', vpn, {'VPN connected': ['YES']})
+        else:
+            airtable.update_by_field('VPN', vpn, {'VPN connected': ['NO']})
+
+
+if __name__ == '__main__':
+    pool_size = 50
+    subnet = '10.12.0.{0}'
+    jobs = mp.Queue()
+    results = mp.Queue()
+    pingresults = mp.Queue()
+    pool = [ mp.Process(target=pinger, args=(jobs,results))
+             for i in range(pool_size) ]
+
+
+    for p in pool:
+        p.start()
+
+    for i in range(1,50):
+        jobs.put(subnet.format(i))
+
+    for p in pool:
+        jobs.put(None)
+
+    for p in pool:
+        p.join()
+
+        ip_list = []
+        procs = []
+    while not results.empty():
+        ip_list.append(results.get())
+        ip_list = sorted(ip_list)
+
+    computer_list =["10.12.0.1", "10.12.0.6", "10.12.0.9", "10.12.0.35"]
+    for computer in computer_list:
+        if computer in ip_list:
+            ip_list.remove(computer)
+
+    ip_list = sorted(ip_list, key=lambda x: (int(x.split(".")[0]),
+                                             int(x.split(".")[1]), 
+                                             int(x.split(".")[2]),
+                                             int(x.split(".")[3])))
+    for ip in ip_list:
+        print(ip)
+
+    print("Number of active vessels: {0}".format(len(ip_list)))
+
+    answer = None
+    while answer not in ("y", "n"):
+        answer = input("Update Airtable? \n(y or n): ")
+        if answer == "y":
+            updateVPNStatus(ip_list)
+        elif answer == "n":
+             pass
+        else:
+        	print("Please enter y or n.")   
