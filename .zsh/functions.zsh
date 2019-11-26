@@ -19,18 +19,18 @@ function condaupdate() {
     conda activate py3
     conda update --all --yes
     conda clean --all --yes
-}    
+}
 
 function update() {
-    dpull
     macupdate
     brewupdate
     condaupdate
 }
 
-function cat2pdf(){
+# Usage: txt2pdf [input file] [output file]
+function txt2pdf(){
     ccat --html --bg=dark $1 > tmp.html
-    wkhtmltopdf tmp.html $1".pdf"
+    wkhtmltopdf tmp.html $2".pdf"
     rm tmp.html
 }
 
