@@ -38,12 +38,12 @@ function sortcat(){
     grep . $1 | sort
 }
 
-# Usage: compresspdf [input file] [output file] [screen*|ebook|printer|prepress]
-function compresspdf() {
+
+function compresspdf() { # Usage: compresspdf [input file] [output file] [screen*|ebook|printer|prepress]
     gs -sDEVICE=pdfwrite -dNOPAUSE -dQUIET -dBATCH -dPDFSETTINGS=/${3:-"screen"} -dCompatibilityLevel=1.4 -sOutputFile="$2" "$1"
 }
 
-# Usage: compressvid [input file] [output file]
-function compressvid() {
+
+function compressvid() { # Usage: compressvid [input file] [output file]
     ffmpeg -i "$1" -c:v libx264 -b:v 1.5M -c:a aac -b:a 128k "$2"
     }
