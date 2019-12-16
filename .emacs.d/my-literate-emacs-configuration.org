@@ -634,13 +634,8 @@ Install the =toc-org= package to automatically generate an updated table of cont
 
 ** Python
 
-Use =anaconda-mode=.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package anaconda-mode
-    :config
-    :hook ((python-mode . anaconda-mode)
-           (python-mode . anaconda-eldoc-mode)))
 #+END_SRC
 
 * Epilogue

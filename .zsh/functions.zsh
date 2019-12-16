@@ -30,7 +30,7 @@ function update() {
 # Usage: txt2pdf [input file] [output file]
 function txt2pdf(){
     ccat --html --bg=dark $1 > tmp.html
-    wkhtmltopdf tmp.html $2".pdf"
+    wkhtmltopdf tmp.html $2
     rm tmp.html
 }
 
@@ -46,4 +46,10 @@ function compresspdf() { # Usage: compresspdf [input file] [output file] [screen
 
 function compressvid() { # Usage: compressvid [input file] [output file]
     ffmpeg -i "$1" -c:v libx264 -b:v 1.5M -c:a aac -b:a 128k "$2"
+    }
+
+# Update vpn status and downtime
+function raaup(){
+    /Users/simenojensen/Desktop/raalabs/scripts/routing_table.py
+    /Users/simenojensen/Desktop/raalabs/scripts/OneOp_Sensor-KPI/update_downtime.py
     }

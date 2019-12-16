@@ -94,5 +94,3 @@ source $ZSH_CUSTOM/functions.zsh
 
 # API Keys
 source ~/.app-env
-
-

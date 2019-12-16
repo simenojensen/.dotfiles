@@ -1,6 +1,5 @@
 channels:
-  - spyder-ide
-  - anaconda
   - conda-forge
+  - anaconda
   - defaults
 pip_interop_enabled: true
