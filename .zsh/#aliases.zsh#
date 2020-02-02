@@ -1,4 +1,4 @@
-# Manage dotfiles with git bare repository
+ # Manage dotfiles with git bare repository
 alias dotfiles="git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
 alias dstatus="dotfiles status"
 alias dadd="dotfiles add"
@@ -35,7 +35,7 @@ alias path='echo -e ${PATH//:/\\n}'
 alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
 
 # stop ping after 10 sends
-#alias ping='ping -c 10'
+alias ping='ping -c 10'
 
 # Hide/show all desktop icons (useful when presenting)
 alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"

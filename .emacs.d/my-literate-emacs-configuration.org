@@ -636,6 +636,13 @@ Install the =toc-org= package to automatically generate an updated table of cont
 
 
 #+BEGIN_SRC emacs-lisp
+(use-package conda
+    :config
+    (setq conda-anaconda-home "/usr/local/Caskroom/miniconda")
+    (setq conda-env-home-directory (expand-file-name "/usr/local/Caskroom/miniconda/"))
+    (conda-env-initialize-interactive-shells)
+    (conda-env-initialize-eshell))
+
 #+END_SRC
 
 * Epilogue

@@ -5,6 +5,8 @@ else
   export EDITOR='emacs'
 fi
 
+# Docker
+
 # ncurses
 # export PATH="/usr/local/opt/ncurses/bin:$PATH"
 # export LDFLAGS="-L/usr/local/opt/ncurses/lib"
