@@ -1,8 +1,7 @@
 #+TITLE: My Literate Emacs Configurations
 #+AUTHOR: Simen Omholt-Jensen
-#+STARTUP:     hideall
+#+STARTUP:     hideall hidestars
 #+PROPERTY:     header-args:emacs-lisp     :tangle "~/.emacs.d/init.el"
-
 
 * Table of Contents :TOC_3:
 - [[#performance-optimization][Performance Optimization]]
@@ -19,8 +18,9 @@
   - [[#automatically-update-packages-with-auto-package-update][Automatically Update Packages with =auto-package-update=.]]
   - [[#prefer-newer-el-files-over-older-elc-files][Prefer Newer =.el= Files Over Older =.elc= Files.]]
   - [[#automatically-compile-packages-during-startup][Automatically Compile Packages During Startup.]]
-  - [[#require-bind-key-to-use-m-x-describe-personal-keybindings][Require =bind-key= to Use ~M-x~ =describe-personal-keybindings=.]]
+  - [[#bind-key][=bind-key=]]
   - [[#diminish][=diminish=]]
+  - [[#try][=try=]]
 - [[#more-convenient-default-settings][More Convenient Default Settings]]
 - [[#disable-guis][Disable GUIs]]
 - [[#functionality][Functionality]]
@@ -31,7 +31,12 @@
   - [[#undo-tools][Undo tools]]
   - [[#expand-region][Expand region]]
   - [[#toggle-line-comment][Toggle Line Comment]]
+  - [[#auto-completion][Auto Completion]]
   - [[#reload-emacs-configurations][Reload Emacs Configurations]]
+  - [[#iedit][=iedit=]]
+  - [[#yasnippets][=yasnippets=]]
+  - [[#hungry-delete][=hungry-delete=]]
+  - [[#aggressive-indent][=aggressive-indent=]]
 - [[#os-specific-settings][OS Specific Settings]]
   - [[#macos][macOS]]
   - [[#windows][Windows]]
@@ -41,16 +46,25 @@
   - [[#list-of-bindings][List of Bindings]]
 - [[#org-mode][org-mode]]
   - [[#toc-org][=toc-org=]]
+  - [[#org-bullets][=org-bullets=]]
+  - [[#revealjs][=reveal.js=]]
 - [[#appearance][Appearance]]
   - [[#themes][Themes]]
 - [[#coding][Coding]]
-  - [[#general][General]]
   - [[#python][Python]]
+    - [[#condael][=conda.el=]]
+    - [[#fly-check][=fly-check=]]
+    - [[#company-anaconda][company-anaconda]]
 - [[#epilogue][Epilogue]]
   - [[#close-file-name-handler-alist-expression][Close =file-name-handler-alist= Expression]]
   - [[#sensible-garbage-collection-threshold][Sensible Garbage Collection Threshold]]
 
 * Performance Optimization
+
+#+BEGIN_SRC emacs-lisp
+  ;;; -*- lexical-binding: t -*-
+#+END_SRC
+
 ** Startup Benchmarking
 
 First, declare a hook which will benchmark the startup process. It reports how long the it took to start up, and how many garbage collections were performed.
@@ -209,7 +223,7 @@ More Information]]
   (auto-compile-on-save-mode))
 #+END_SRC
 
-** Require =bind-key= to Use ~M-x~ =describe-personal-keybindings=.
+** =bind-key=
 
 #+BEGIN_SRC emacs-lisp
   (require 'bind-key)
@@ -222,6 +236,14 @@ The =diminish= package makes it possible to remove clutter from the modeline. Th
 
 #+BEGIN_SRC emacs-lisp
   (use-package diminish)
+#+END_SRC
+
+** =try=
+
+The =try= package let's you try new packages without installed them. On the next restart of Emacs, they are not loaded.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package try)
 #+END_SRC
 
 * More Convenient Default Settings
@@ -261,7 +283,7 @@ The =diminish= package makes it possible to remove clutter from the modeline. Th
 - Save automatically generated backup files to =~/.emacs.d/backups/=.
 
 #+BEGIN_SRC emacs-lisp
-  (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+  (setq backup-directory-alist '(("." . "/Users/simenojensen/.emacs.d/backups")))
 #+END_SRC
 
 - Set the column width to 80 characters.
@@ -386,6 +408,12 @@ The =diminish= package makes it possible to remove clutter from the modeline. Th
     ("C-x o" . ace-window))
 #+END_SRC
 
+Built-in =winner-mode= for remembering previous window actions.
+
+#+BEGIN_SRC emacs-lisp
+  (winner-mode 1)
+#+END_SRC
+
 ** =Ivy= / =Counsel= / =Swiper=
 *** =smart-mx=
 
@@ -408,7 +436,9 @@ The =diminish= package makes it possible to remove clutter from the modeline. Th
     ("<f1> i" . counsel-info-lookup-symbol)
     ("<f1> u" . counsel-unicode-char)
     ("<f1> j" . counsel-set-variable)
-    ("M-x" . counsel-M-x))
+    ("M-x" . counsel-M-x)
+    ("M-v" . counsel-yank-pop)
+    )
 
   (use-package ivy
     :diminish
@@ -417,12 +447,15 @@ The =diminish= package makes it possible to remove clutter from the modeline. Th
     :config
     (ivy-mode 1)
     (setq ivy-initial-inputs-alist nil)
+    (setq ivy-display-style 'fancy)
     (setq ivy-use-virtual-buffers t)
-    (setq ivy-count-format "(%d/%d) "))
+    (setq ivy-count-format "(%d/%d) ")
+    )
 
   (use-package swiper
-      :bind
-      ("C-s" . swiper-isearch))
+    :bind
+    ("C-s" . swiper-isearch)
+    )
 #+END_SRC
 
 ** Undo tools
@@ -432,9 +465,11 @@ The =diminish= package makes it possible to remove clutter from the modeline. Th
 #+BEGIN_SRC emacs-lisp
   (use-package undo-tree
     :diminish
-    :bind ("C-x u" . undo-tree-visualize)
+    :bind
+    ("C-x u" . undo-tree-visualize)
     :config
-    (global-undo-tree-mode))
+    (global-undo-tree-mode)
+    )
 #+END_SRC
 ** Expand region
 
@@ -450,11 +485,26 @@ The =diminish= package makes it possible to remove clutter from the modeline. Th
 Comment or uncomment the current line. Bind to ~C-;~.
 
 #+BEGIN_SRC emacs-lisp
-(defun my/toggle-comment-on-line ()
-  (interactive)
-  (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
+  (defun my/toggle-comment-on-line ()
+    (interactive)
+    (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
 
-(bind-key "C-;" 'my/toggle-comment-on-line)
+  (bind-key "C-;" 'my/toggle-comment-on-line)
+#+END_SRC
+
+** Auto Completion
+
+I will be using =company= for autocompletion.
+[[http://company-mode.github.io/][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :config
+    (setq-default company-idle-delay 0)
+    (setq company-minimum-prefix-length 3)
+    :hook
+    (after-init . global-company-mode)
+    )
 #+END_SRC
 
 ** Reload Emacs Configurations
@@ -466,6 +516,49 @@ This function reloads =~/.emacs.d/init.el=.
     "Reloads init.el."
     (interactive)
     (load-file "~/.emacs.d/init.el"))
+  #+END_SRC
+
+** =iedit=
+
+=iedit= allows you to edit multiple occurrences of a symbol or region.
+[[https://www.emacswiki.org/emacs/Iedit][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package iedit
+    :bind
+    ("M-;" . iedit-mode))
+#+END_SRC
+
+** =yasnippets=
+
+=yasnippets= is a template system.
+[[https://github.com/joaotavora/yasnippet][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :config
+    (use-package yasnippet-snippets)
+    (yas-global-mode 1))
+#+END_SRC
+
+** =hungry-delete=
+
+Delete trailing whitespace
+
+#+BEGIN_SRC emacs-lisp
+  (use-package hungry-delete
+    :config
+    (global-hungry-delete-mode))
+#+END_SRC
+
+** =aggressive-indent=
+
+[[https://github.com/joaotavora/aggressive-indent-mode][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package aggressive-indent
+  ;; :config
+  ;; (global-aggressive-indent-mode 1))
 #+END_SRC
 
 * OS Specific Settings
@@ -493,7 +586,7 @@ By setting the ~M~ to ~⌘~, ~A~ to ~^~ (left option)  and ~S~ to ~^~ (right opt
 Next, we are binding ~M-=~ to increase the font size, and ~M--~ to decrease the font size.
 
 #+BEGIN_SRC emacs-lisp
-  (bind-key "M-+" 'text-scale-increase)
+  (bind-key "M-=" 'text-scale-increase)
   (bind-key "M--" 'text-scale-decrease)
 #+END_SRC
 
@@ -515,7 +608,8 @@ Lastly, we make sure the =$PATH= is loaded from the default shell.
   (use-package exec-path-from-shell
     :defer nil
     :config
-    (exec-path-from-shell-initialize))
+    (exec-path-from-shell-initialize)
+    )
   )
 #+END_SRC
 
@@ -564,17 +658,17 @@ The =which-key= package automatically displays potential command information as 
   (bind-key "M-n" 'make-frame)
 #+END_SRC
 
+- Revert Buffer
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "M-r" 'revert-buffer)
+#+END_SRC
+
+
 - Focus next frame (emulate macOS' "focus next window" shortcut).
 
 #+BEGIN_SRC emacs-lisp
   (bind-key "M-`" 'other-frame)
-#+END_SRC
-
-- Close frame (emulate macOS' "close window" shortcut). =kill-ring-save= is remapped to ~A-w~.
-
-#+BEGIN_SRC emacs-lisp
-  (bind-key "M-w" 'delete-frame)
-  (bind-key "A-w" 'kill-ring-save)
 #+END_SRC
 
 - =crux= sets ~C-a~ to move to the first non-whitespace character on a line, and then to toggle between that and the beginning of the line.
@@ -586,17 +680,15 @@ The =which-key= package automatically displays potential command information as 
 
 * org-mode
 
-Install a newer version of org-mode. Further, remove org directories from the load path, to ensure this version is prioritized instead.
+Install org-mode from the org package repository.
 
 #+BEGIN_SRC emacs-lisp
   (use-package org
-    :ensure org-plus-contrib
     :pin org
-    :defer t)
-
-  ;; Ensure ELPA org is prioritized above built-in org.
-  (require 'cl)
-  (setq load-path (remove-if (lambda (x) (string-match-p "org$" x)) load-path))
+    :config
+    ;; add "<s <TAB>" for code block completion
+    (add-to-list 'org-modules 'org-tempo)
+    )
 #+END_SRC
 
 ** =toc-org=
@@ -609,6 +701,29 @@ Install the =toc-org= package to automatically generate an updated table of cont
     :hook (org-mode . toc-org-enable))
 #+END_SRC
 
+** =org-bullets=
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org-bullets
+    :hook (org-mode . (lambda () (org-bullets-mode 1))
+                    ))
+ #+END_SRC
+
+** =reveal.js=
+
+Install reveal.js from [[https://github.com/hakimel/reveal.js/][here]]. Then, install [[https://github.com/hexmode/ox-reveal][=ox-reveal=]] and [[https://github.com/hniksic/emacs-htmlize][=htmlize=]].
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ox-reveal
+    :ensure ox-reveal
+    :config
+    (setq org-reveal-root "/Users/simenojensen/.emacs.d/reveal.js/")
+    (setq org-reveal-mathjax t)
+    )
+
+  (use-package htmlize)
+#+END_SRC
+
 * Appearance
 ** Themes
 
@@ -616,33 +731,74 @@ Install the =toc-org= package to automatically generate an updated table of cont
   ;;(use-package solarized-theme)
   ;;(use-package darktooth-theme)
   ;;(use-package kaolin-themes)
-  (use-package gruvbox-theme)
-  (load-theme 'gruvbox)
+  (use-package gruvbox-theme
+    :config
+    (load-theme 'gruvbox)
+    )
 #+END_SRC
 
 * Coding
-** General
-
-- =iedit= allows you to edit multiple occurrences of a symbol or region.
-[[https://www.emacswiki.org/emacs/Iedit][More Information]]
-
-#+BEGIN_SRC emacs-lisp
-  (use-package iedit
-    :bind
-    ("M-;" . iedit-mode))
-#+END_SRC
-
 ** Python
 
+Set the python interpreter to =IPython=.
+[[https://www.emacswiki.org/emacs/PythonProgrammingInEmacs][More Information]]
 
 #+BEGIN_SRC emacs-lisp
-(use-package conda
-    :config
-    (setq conda-anaconda-home "/usr/local/Caskroom/miniconda")
-    (setq conda-env-home-directory (expand-file-name "/usr/local/Caskroom/miniconda/"))
-    (conda-env-initialize-interactive-shells)
-    (conda-env-initialize-eshell))
+  (setq python-shell-interpreter "ipython"
+         python-shell-interpreter-args "--simple-prompt -i")
+#+END_SRC
 
+Set run python script keybinding.
+[[https://github.com/jorgenschaefer/elpy/issues/69][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "<f5>") (kbd "C-u C-c C-c"))
+#+END_SRC
+
+*** =conda.el=
+
+This package lets you activate your conda environments. The setup works for miniconda installed by homebrew.
+[[https://github.com/necaris/conda.el][More Information]]
+
+Usage:
+- ~M-x conda-env-activate~
+- ~M-x conda-env-deactivate~
+
+#+BEGIN_SRC emacs-lisp
+  (use-package conda
+    :init
+    (setq conda-anaconda-home "/usr/local/Caskroom/miniconda/base/")
+    :config
+    ;; interactive shell support
+    (conda-env-initialize-interactive-shells)
+    ;; eshell support
+    (conda-env-initialize-eshell)
+    ;; auto-activate
+    (conda-env-autoactivate-mode t)
+    )
+#+END_SRC
+
+*** =fly-check=
+
+[[https://www.flycheck.org/en/latest/][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :init
+    (global-flycheck-mode t)
+    :config
+    (setq flycheck-checker-error-threshold 1000)
+    )
+#+END_SRC
+
+*** company-anaconda
+
+#+BEGIN_SRC emacs-lisp
+  (use-package company-anaconda
+    :config
+    (add-to-list 'company-backends 'company-anaconda)
+    :hook (python-mode . anaconda-mode)
+    )
 #+END_SRC
 
 * Epilogue
