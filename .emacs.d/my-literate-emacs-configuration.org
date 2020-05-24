@@ -31,7 +31,7 @@
   - [[#iedit][=iedit=]]
   - [[#hungry-delete][=hungry-delete=]]
   - [[#aggressive-indent][=aggressive-indent=]]
-  - [[#toggle-line-comment][Toggle Line Comment]]
+  - [[#mytoggle-comment-on-line][=my/toggle-comment-on-line=]]
 - [[#programming][Programming]]
   - [[#yasnippets][=yasnippets=]]
   - [[#flycheck][=flycheck=]]
@@ -511,7 +511,7 @@ Delete trailing whitespace
     ;; )
 #+END_SRC
 
-** Toggle Line Comment
+** =my/toggle-comment-on-line=
 
 Comment or uncomment the current line. Bind to ~C-;~.
 
