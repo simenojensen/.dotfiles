@@ -20,45 +20,53 @@
   - [[#diminish][=diminish=]]
   - [[#try][=try=]]
 - [[#more-convenient-default-settings][More Convenient Default Settings]]
-- [[#functionality][Functionality]]
-  - [[#window-navigation][Window Navigation]]
+- [[#interface-enhancement][Interface Enhancement]]
+  - [[#smart-mx][=smart-mx=]]
   - [[#ivy--counsel--swiper][=Ivy= / =Counsel= / =Swiper=]]
-    - [[#smart-mx][=smart-mx=]]
-    - [[#ivy-is-an-interactive-interface-for-completion-in-emacs][=Ivy= is an interactive interface for completion in Emacs.]]
-  - [[#undo-tools][Undo tools]]
-  - [[#expand-region][Expand region]]
-  - [[#toggle-line-comment][Toggle Line Comment]]
-  - [[#auto-completion][Auto Completion]]
+- [[#navigation][Navigation]]
+  - [[#ace-window][=ace-window=]]
+  - [[#winner-mode][=winner-mode=]]
+- [[#editing][Editing]]
+  - [[#expand-region][=expand-region=]]
   - [[#iedit][=iedit=]]
-  - [[#yasnippets][=yasnippets=]]
   - [[#hungry-delete][=hungry-delete=]]
   - [[#aggressive-indent][=aggressive-indent=]]
-  - [[#restart-emacs][=restart-emacs=]]
-  - [[#google-this][=google-this=]]
+  - [[#toggle-line-comment][Toggle Line Comment]]
+- [[#programming][Programming]]
+  - [[#yasnippets][=yasnippets=]]
   - [[#flycheck][=flycheck=]]
-  - [[#killing-emacs][Killing emacs]]
+  - [[#undo-tree][=undo-tree=]]
+- [[#auto-completion][Auto Completion]]
+  - [[#company-mode][=company-mode=]]
+    - [[#company-quickhelp][=company-quickhelp=]]
+    - [[#company-statistics][=company-statistics=]]
+  - [[#company-jedi][=company-jedi=]]
 - [[#os-specific-settings][OS Specific Settings]]
   - [[#macos][macOS]]
   - [[#windows][Windows]]
   - [[#linux][Linux]]
-- [[#org-mode][org-mode]]
+- [[#appearance][Appearance]]
+  - [[#themes][Themes]]
+  - [[#paren][=paren=]]
+  - [[#beacon][=beacon=]]
+  - [[#rainbow-delimiters][=rainbow-delimiters=]]
+- [[#org-mode][=org-mode=]]
   - [[#toc-org][=toc-org=]]
   - [[#org-bullets][=org-bullets=]]
   - [[#revealjs][=reveal.js=]]
-- [[#appearance][Appearance]]
-  - [[#themes][Themes]]
-  - [[#beacon][Beacon]]
-- [[#coding][Coding]]
-  - [[#general][General]]
-    - [[#insert-shebang][=insert-shebang=]]
-  - [[#python][Python]]
-    - [[#condael][=conda.el=]]
-    - [[#company-jedi][=company-jedi=]]
-- [[#elisp-functions][Elisp functions]]
-  - [[#rename-open-file-and-change-buffer-name-as-well][Rename open file and change buffer name as well]]
-  - [[#move-to-matching-parenthesis][Move to matching parenthesis]]
-- [[#desktop][Desktop]]
-  - [[#minimal-setup][Minimal Setup]]
+  - [[#htmlize][=htmlize=]]
+- [[#python][Python]]
+  - [[#repl][REPL]]
+  - [[#conda][=conda=]]
+  - [[#ein][=ein=]]
+  - [[#insert-shebang][=insert-shebang=]]
+- [[#added-functionality][Added Functionality]]
+  - [[#restart-emacs][=restart-emacs=]]
+  - [[#myrename-file-and-buffer][=my/rename-file-and-buffer=]]
+  - [[#goto-match-paren][=goto-match-paren=]]
+  - [[#session-save][=session-save=]]
+- [[#internet][Internet]]
+  - [[#google-this][=google-this=]]
 - [[#keybindings][Keybindings]]
   - [[#which-key][which-key]]
   - [[#list-of-bindings][List of Bindings]]
@@ -372,38 +380,33 @@ The =try= package let's you try new packages without installed them. On the next
   (setq-default ring-bell-function 'ignore)
 #+END_SRC
 
-* Functionality
-** Window Navigation
-
-=ace-window= offers fast window navigation with [[https://github.com/zamansky/using-emacs/blob/master/myinit.org#ace-windows-for-easy-window-switching][customizable]] prompts.
-[[https://github.com/abo-abo/ace-window][More Information]]
+- Do not confirm when killing emacs.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package ace-window
-    :init
-    (custom-set-faces
-     '(aw-leading-char-face
-       ((t (:inherit ace-jump-face-foreground :height 3.0)))))
-    :bind
-    ("C-x o" . ace-window))
+  (setq-default confirm-kill-emacs nil)
 #+END_SRC
 
-Built-in =winner-mode= for remembering previous window actions.
+- Do not confirm when killing processes.
 
 #+BEGIN_SRC emacs-lisp
-  (winner-mode 1)
+  (setq-default confirm-kill-processes nil)
 #+END_SRC
 
-** =Ivy= / =Counsel= / =Swiper=
-*** =smart-mx=
+* Interface Enhancement
+** =smart-mx=
 
 =smart M-x= suggests ~M-x~ commands based on recency and frequency. Used by Counsel indirectely.
+
+[[https://github.com/nonsequitur/smex/][More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (use-package smex)
 #+END_SRC
 
-*** =Ivy= is an interactive interface for completion in Emacs.
+** =Ivy= / =Counsel= / =Swiper=
+
+=Ivy= is an interactive interface for completion in Emacs.
+
 [[https://oremacs.com/swiper/][More Information]]
 
 #+BEGIN_SRC emacs-lisp
@@ -437,100 +440,54 @@ Built-in =winner-mode= for remembering previous window actions.
     )
 #+END_SRC
 
-** Undo tools
+* Navigation
+** =ace-window=
 
-=undo-tree= visualises undo history as a tree for easy navigation.
+=ace-window= offers fast window navigation with [[https://github.com/zamansky/using-emacs/blob/master/myinit.org#ace-windows-for-easy-window-switching][customizable]] prompts.
+
+[[https://github.com/abo-abo/ace-window][More Information]]
 
 #+BEGIN_SRC emacs-lisp
-  (use-package undo-tree
-    :diminish
+  (use-package ace-window
     :bind
-    ("C-x u" . undo-tree-visualize)
-    :config
-    (global-undo-tree-mode)
-    )
+    ("C-x o" . ace-window)
+    :init
+    (custom-set-faces
+     '(aw-leading-char-face
+       ((t (:inherit ace-jump-face-foreground :height 3.0))))))
 #+END_SRC
 
-** Expand region
+** =winner-mode=
+
+Built-in =winner-mode= for remembering previous window actions.
+
+#+BEGIN_SRC emacs-lisp
+  (winner-mode 1)
+#+END_SRC
+
+* Editing
+** =expand-region=
 
 =expand-region= expands your marked region around the cursor semantically depending on mode.
 
+[[https://github.com/magnars/expand-region.el][More Information]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
-    :bind ("C-=" . er/expand-region))
-#+END_SRC
-
-** Toggle Line Comment
-
-Comment or uncomment the current line. Bind to ~C-;~.
-
-#+BEGIN_SRC emacs-lisp
-  (defun my/toggle-comment-on-line ()
-    (interactive)
-    (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
-
-  (bind-key "C-;" 'my/toggle-comment-on-line)
-#+END_SRC
-
-** Auto Completion
-
-I will be using =company= for autocompletion.
-[[http://company-mode.github.io/][More Information]]
-
-#+BEGIN_SRC emacs-lisp
-  (use-package company
-    :diminish
-    :config
-    (setq-default company-idle-delay 0)
-    (setq company-minimum-prefix-length 3)
-    (global-company-mode t)
-    :bind (:map company-active-map
-           ("C-n" . company-select-next)
-           ("C-p" . company-select-previous))
-    )
-#+END_SRC
-
-[[https://github.com/company-mode/company-quickhelp][More Information]]
-
-#+BEGIN_SRC emacs-lisp
-  (use-package pos-tip)
-
-  (use-package company-quickhelp
-    :config
-    (company-quickhelp-mode)
-    )
-#+END_SRC
-
-[[https://github.com/company-mode/company-statistics][More Information]]
-
-#+BEGIN_SRC emacs-lisp
-(use-package company-statistics
-  :config
-  (company-statistics-mode))
+    :bind
+    ("C-=" . er/expand-region))
 #+END_SRC
 
 ** =iedit=
 
 =iedit= allows you to edit multiple occurrences of a symbol or region.
+
 [[https://www.emacswiki.org/emacs/Iedit][More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (use-package iedit
     :bind
     ("M-;" . iedit-mode))
-#+END_SRC
-
-** =yasnippets=
-
-=yasnippets= is a template system.
-[[https://github.com/joaotavora/yasnippet][More Information]]
-
-#+BEGIN_SRC emacs-lisp
-  (use-package yasnippet
-    :diminish
-    :config
-    (use-package yasnippet-snippets)
-    (yas-global-mode 1))
 #+END_SRC
 
 ** =hungry-delete=
@@ -554,27 +511,38 @@ Delete trailing whitespace
     ;; )
 #+END_SRC
 
-** =restart-emacs=
+** Toggle Line Comment
 
-Restart Emacs from within Emacs.
-[[https://github.com/iqbalansari/restart-emacs][More Information]]
+Comment or uncomment the current line. Bind to ~C-;~.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package restart-emacs)
+  (defun my/toggle-comment-on-line ()
+    (interactive)
+    (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
+
+  (bind-key "C-;" 'my/toggle-comment-on-line)
 #+END_SRC
 
-** =google-this=
+* Programming
+** =yasnippets=
 
-[[http://pragmaticemacs.com/emacs/google-search-from-inside-emacs/][More Information]]
+=yasnippets= is a template system.
+
+[[https://github.com/joaotavora/yasnippet][More Information]]
 
 #+BEGIN_SRC emacs-lisp
-  (use-package google-this
+  (use-package yasnippet
+    :diminish
     :config
-    (google-this-mode t)
-    )
+    (use-package yasnippet-snippets)
+    (yas-global-mode 1))
 #+END_SRC
 
 ** =flycheck=
+
+Flycheck is a modern on-the-fly syntax checking extension for GNU Emacs, intended as replacement for the older Flymake extension which is part of GNU Emacs.
+
+[[https://www.flycheck.org/en/latest/][More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
@@ -582,18 +550,85 @@ Restart Emacs from within Emacs.
     (global-flycheck-mode))
 #+END_SRC
 
-** Killing emacs
+** =undo-tree=
 
-Do not confirm when killing emacs.
+=undo-tree= visualises undo history as a tree for easy navigation.
+
+[[http://www.dr-qubit.org/undo-tree.html][More Information]]
 
 #+BEGIN_SRC emacs-lisp
-  (setq-default confirm-kill-emacs nil)
+  (use-package undo-tree
+    :diminish
+    :bind
+    ("C-x u" . undo-tree-visualize)
+    :config
+    (global-undo-tree-mode)
+    )
 #+END_SRC
 
-Do not confirm when killing processes.
+* Auto Completion
+** =company-mode=
+
+I am using =company= for autocompletion.
+
+[[http://company-mode.github.io/][More Information]]
 
 #+BEGIN_SRC emacs-lisp
-  (setq-default confirm-kill-processes nil)
+  (use-package company
+    :diminish
+    :bind (:map company-active-map
+           ("C-n" . company-select-next)
+           ("C-p" . company-select-previous))
+    :config
+    (setq-default company-idle-delay 0)
+    (setq company-minimum-prefix-length 3)
+    (global-company-mode t))
+#+END_SRC
+
+*** =company-quickhelp=
+
+[[https://github.com/company-mode/company-quickhelp][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package pos-tip)
+
+  (use-package company-quickhelp
+    :config
+    (company-quickhelp-mode)
+    )
+#+END_SRC
+
+*** =company-statistics=
+
+[[https://github.com/company-mode/company-statistics][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+(use-package company-statistics
+  :config
+  (company-statistics-mode))
+#+END_SRC
+
+** =company-jedi=
+
+Follow [[https://wfbroderick.com/2019-Jan-01.html][this guide]] to set up with conda and company.
+
+[[https://github.com/emacsorphanage/company-jedi][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package company-jedi
+    :diminish
+    :config
+    (setq-default jedi:complete-on-dot t)
+    (eval-after-load "company-jedi"
+      '(setq jedi:server-command (list "/usr/local/Caskroom/miniconda/base/envs/emacs-jedi/bin/python" jedi:server-script)))
+    (defun my/python-mode-hook ()
+      (add-to-list 'company-backends 'company-jedi))
+    :hook
+    (python-mode . my/python-mode-hook)
+    (python-mode . jedi:setup)
+    (conda-postactivate . jedi:stop-server)
+    (conda-postdeactivate . jedi:stop-server)
+    )
 #+END_SRC
 
 * OS Specific Settings
@@ -637,6 +672,7 @@ Further, a function borrowed from [[https://zzamboni.org/post/my-emacs-configura
 #+END_SRC
 
 Lastly, we make sure the =$PATH= is loaded from the default shell.
+
 [[https://github.com/purcell/exec-path-from-shell][More Information]]
 
 #+BEGIN_SRC emacs-lisp
@@ -675,9 +711,63 @@ Not Implemented
  )
 #+END_SRC
 
-* org-mode
+* Appearance
+** Themes
+
+#+BEGIN_SRC emacs-lisp
+  ;;(use-package solarized-theme)
+  ;;(use-package darktooth-theme)
+  ;;(use-package kaolin-themes)
+  (use-package gruvbox-theme
+    :config
+    (load-theme 'gruvbox)
+    )
+#+END_SRC
+
+** =paren=
+
+Highlight matching parenthesis.
+
+[[https://www.emacswiki.org/emacs/ShowParenMode][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package paren
+    :config
+    (show-paren-mode t)
+    (set-face-background 'show-paren-match "#EC7063")
+    (set-face-foreground 'show-paren-match "Red1")
+    (set-face-attribute 'show-paren-match nil :weight 'extra-bold)
+    )
+#+END_SRC
+
+** =beacon=
+
+[[https://github.com/Malabarba/beacon][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package beacon
+    :config
+    (beacon-mode 1)
+    (setq beacon-color "#39FF14")
+    )
+#+END_SRC
+
+** =rainbow-delimiters=
+
+[[https://github.com/Fanael/rainbow-delimiters][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+    (use-package rainbow-delimiters
+      :hook
+      (prog-mode . rainbow-delimiters-mode)
+      )
+#+END_SRC
+
+* =org-mode=
 
 Install org-mode from the org package repository.
+
+[[https://orgmode.org/][More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (use-package org
@@ -692,6 +782,8 @@ Install org-mode from the org package repository.
 
 Install the =toc-org= package to automatically generate an updated table of contents.
 
+[[https://github.com/snosov1/toc-org][More Information]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package toc-org
     :after org
@@ -701,15 +793,19 @@ Install the =toc-org= package to automatically generate an updated table of cont
 
 ** =org-bullets=
 
+[[https://github.com/sabof/org-bullets][More Information]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package org-bullets
-    :hook (org-mode . (lambda () (org-bullets-mode t))
-                    ))
+    :hook
+    (org-mode . (lambda () (org-bullets-mode t))))
  #+END_SRC
 
 ** =reveal.js=
 
 Install reveal.js from [[https://github.com/hakimel/reveal.js/][here]]. Then, install [[https://github.com/hexmode/ox-reveal][=ox-reveal=]] and [[https://github.com/hniksic/emacs-htmlize][=htmlize=]].
+
+[[https://github.com/hexmode/ox-reveal][More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (use-package ox-reveal
@@ -718,59 +814,18 @@ Install reveal.js from [[https://github.com/hakimel/reveal.js/][here]]. Then, in
     (setq org-reveal-root "/Users/simenojensen/.emacs.d/reveal.js/")
     (setq org-reveal-mathjax t)
     )
+#+END_SRC
 
+** =htmlize=
+
+[[https://github.com/hniksic/emacs-htmlize][More Information]]
+
+#+BEGIN_SRC emacs-lisp
   (use-package htmlize)
 #+END_SRC
 
-* Appearance
-** Themes
-
-#+BEGIN_SRC emacs-lisp
-  ;;(use-package solarized-theme)
-  ;;(use-package darktooth-theme)
-  ;;(use-package kaolin-themes)
-  (use-package gruvbox-theme
-    :config
-    (load-theme 'gruvbox)
-    )
-#+END_SRC
-
-- Highlight matching parenthesis
-
-#+BEGIN_SRC emacs-lisp
-  (use-package paren
-    :config
-    (show-paren-mode t)
-    (set-face-background 'show-paren-match "#EC7063")
-    (set-face-foreground 'show-paren-match "Red1")
-    (set-face-attribute 'show-paren-match nil :weight 'extra-bold)
-    )
-#+END_SRC
-
-** Beacon
-
-[[https://github.com/Malabarba/beacon][More Information]]
-
-#+BEGIN_SRC emacs-lisp
-  (use-package beacon
-    :config
-    (beacon-mode 1)
-    (setq beacon-color "#39FF14")
-    )
-#+END_SRC
-
-* Coding
-** General
-
-*** =insert-shebang=
-
-[[https://carlfg.wordpress.com/2013/10/21/insert-shebang-extension-for-emacs/][More Information]]
-
-#+BEGIN_SRC emacs-lisp
-  (use-package insert-shebang)
-#+END_SRC
-
-** Python
+* Python
+** REPL
 
 [[https://www.emacswiki.org/emacs/PythonProgrammingInEmacs#toc30][More Information]]
 
@@ -786,16 +841,12 @@ Install reveal.js from [[https://github.com/hakimel/reveal.js/][here]]. Then, in
     (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter"))
 
   (add-hook 'python-mode-hook 'my/add-python-shell-completion-native-disabled-interpreters)
-
-  (use-package ein
-    :config
-    (setq ein:output-area-inlined-images t)
-    )
 #+END_SRC
 
-*** =conda.el=
+** =conda=
 
 This package lets you activate your conda environments. The setup works for miniconda installed by homebrew.
+
 [[https://github.com/necaris/conda.el][More Information]]
 
 Usage:
@@ -807,38 +858,44 @@ Usage:
     :init
     (setq conda-anaconda-home "/usr/local/Caskroom/miniconda/base/")
     :config
-    ;; interactive shell support
-    (conda-env-initialize-interactive-shells)
-    ;; eshell support
-    (conda-env-initialize-eshell)
-    ;; auto-activate
-    (conda-env-autoactivate-mode t)
-    )
+    (conda-env-initialize-interactive-shells) ;; interactive shell support
+    (conda-env-initialize-eshell)             ;; eshell support
+    (conda-env-autoactivate-mode t))          ;; autoactivate
 #+END_SRC
 
-*** =company-jedi=
+** =ein=
 
-[[https://github.com/emacsorphanage/company-jedi][More Information]]
+The Emacs IPython Notebook (=EIN=) package provides a Jupyter Notebook client and integrated REPL (like SLIME) in Emacs.
+
+[[http://millejoh.github.io/emacs-ipython-notebook/][More Information]]
 
 #+BEGIN_SRC emacs-lisp
-  (use-package company-jedi
-    :diminish
+  (use-package ein
     :config
-    (setq-default jedi:complete-on-dot t)
-    (eval-after-load "company-jedi"
-      '(setq jedi:server-command (list "/usr/local/Caskroom/miniconda/base/envs/emacs-jedi/bin/python" jedi:server-script)))
-    (defun my/python-mode-hook ()
-      (add-to-list 'company-backends 'company-jedi))
-    :hook
-    (python-mode . my/python-mode-hook)
-    (python-mode . jedi:setup)
-    (conda-postactivate . jedi:stop-server)
-    (conda-postdeactivate . jedi:stop-server)
-    )
+    (setq ein:output-area-inlined-images t))
 #+END_SRC
 
-* Elisp functions
-** Rename open file and change buffer name as well
+** =insert-shebang=
+
+[[https://carlfg.wordpress.com/2013/10/21/insert-shebang-extension-for-emacs/][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package insert-shebang)
+#+END_SRC
+
+* Added Functionality
+** =restart-emacs=
+
+Restart Emacs from within Emacs.
+[[https://github.com/iqbalansari/restart-emacs][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package restart-emacs)
+#+END_SRC
+
+** =my/rename-file-and-buffer=
+
+Rename open file and change buffer name as well
 
 #+BEGIN_SRC emacs-lisp
   ;; source: http://steve.yegge.googlepages.com/my-dot-emacs-file
@@ -856,10 +913,9 @@ Usage:
             (rename-buffer new-name)
             (set-visited-file-name new-name)
             (set-buffer-modified-p nil))))))
-
 #+END_SRC
 
-** Move to matching parenthesis
+** =goto-match-paren=
 
 [[https://www.emacswiki.org/emacs/NavigatingParentheses#toc8][More Information]]
 
@@ -884,8 +940,7 @@ Usage:
                         ))))))
  #+END_SRC
 
-* Desktop
-** Minimal Setup
+** =session-save=
 
 [[https://www.emacswiki.org/emacs/Desktop][More Information]]
 
@@ -894,14 +949,6 @@ Usage:
   (setq desktop-path '("~/.emacs.d/"))
   (setq desktop-dirname "~/.emacs.d/")
   (setq desktop-base-file-name "emacs-desktop")
-
-  ;; remove desktop after it's been read
-  ;; (add-hook 'desktop-after-read-hook
-            ;; '(lambda ()
-               ;; desktop-remove clears desktop-dirname
-               ;; (setq desktop-dirname-tmp desktop-dirname)
-               ;; (desktop-remove)
-               ;; (setq desktop-dirname desktop-dirname-tmp)))
 
   (defun saved-session ()
     (file-exists-p (concat desktop-dirname "/" desktop-base-file-name)))
@@ -932,10 +979,23 @@ Usage:
                        (session-restore)))))
 #+END_SRC
 
+* Internet
+** =google-this=
+
+[[http://pragmaticemacs.com/emacs/google-search-from-inside-emacs/][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package google-this
+    :config
+    (google-this-mode t)
+    )
+#+END_SRC
+
 * Keybindings
 ** which-key
 
 The =which-key= package automatically displays potential command information as command keys are typed. This makes it easy to explore Emacs functionality.
+
 [[https://github.com/justbur/emacs-which-key][More Information]]
 
 #+BEGIN_SRC emacs-lisp
@@ -954,30 +1014,18 @@ The =which-key= package automatically displays potential command information as 
   (bind-key "M-g" 'goto-line)
 #+END_SRC
 
-- Create new frame (emulate macOS' "new window" shortcut).
-
-#+BEGIN_SRC emacs-lisp
-  ;; (bind-key "M-n" 'make-frame)
-#+END_SRC
-
 - Revert Buffer
 
 #+BEGIN_SRC emacs-lisp
   (bind-key "M-r" 'revert-buffer)
 #+END_SRC
 
-
-- Focus next frame (emulate macOS' "focus next window" shortcut).
-
-#+BEGIN_SRC emacs-lisp
-  ;; (bind-key "M-`" 'other-frame)
-#+END_SRC
-
 - =crux= sets ~C-a~ to move to the first non-whitespace character on a line, and then to toggle between that and the beginning of the line.
 
 #+BEGIN_SRC emacs-lisp
   (use-package crux
-    :bind ("C-a" . crux-move-beginning-of-line))
+    :bind
+    ("C-a" . crux-move-beginning-of-line))
 #+END_SRC
 
 - =goto-match-paren=
@@ -1002,13 +1050,6 @@ The =which-key= package automatically displays potential command information as 
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-    (use-package rainbow-delimiters
-      :hook
-      (prog-mode . rainbow-delimiters-mode)
-      )
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
   (use-package tex-site
     :ensure auctex
     :mode ("\\.tex\\'" . latex-mode)
@@ -1020,7 +1061,6 @@ The =which-key= package automatically displays potential command information as 
     (setq-default TeX-master nil)
     )
 #+END_SRC
-
 
 * Epilogue
 ** Sensible Garbage Collection Threshold
