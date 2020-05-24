@@ -157,7 +157,9 @@ By default, Emacs comes with the Emacs Lisp Package Archive (ELPA). As the packa
     (require 'use-package))
 #+END_SRC
 
-- By setting =use-package-always-ensure= to =t=, =use-package= will install packages that are not already installed. [[https://github.com/jwiegley/use-package#package-installation][More Information]]
+- By setting =use-package-always-ensure= to =t=, =use-package= will install packages that are not already installed.
+
+ [[https://github.com/jwiegley/use-package#package-installation][More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (require 'use-package-ensure)
@@ -183,8 +185,8 @@ By default, Emacs comes with the Emacs Lisp Package Archive (ELPA). As the packa
 #+END_SRC
 
 ** Automatically Compile Packages During Startup.
-[[https://github.com/emacscollective/auto-compile][
-More Information]]
+
+[[https://github.com/emacscollective/auto-compile][More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (use-package auto-compile
@@ -195,6 +197,8 @@ More Information]]
 
 ** =bind-key=
 
+To use with =use-package=.
+
 #+BEGIN_SRC emacs-lisp
   (require 'bind-key)
 #+END_SRC
@@ -202,6 +206,7 @@ More Information]]
 ** =diminish=
 
 The =diminish= package makes it possible to remove clutter from the modeline. The =:diminish= keyword in the =use-package= declarations signify =diminish= invocation.
+
 [[https://github.com/myrjola/diminish.el][More Information]]
 
 #+BEGIN_SRC emacs-lisp
@@ -211,6 +216,8 @@ The =diminish= package makes it possible to remove clutter from the modeline. Th
 ** =try=
 
 The =try= package let's you try new packages without installed them. On the next restart of Emacs, they are not loaded.
+
+[[https://github.com/larstvei/Try][More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (use-package try)
