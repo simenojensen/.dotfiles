@@ -30,12 +30,12 @@
   - [[#expand-region][=expand-region=]]
   - [[#iedit][=iedit=]]
   - [[#hungry-delete][=hungry-delete=]]
-  - [[#aggressive-indent][=aggressive-indent=]]
-  - [[#mytoggle-comment-on-line][=my/toggle-comment-on-line=]]
 - [[#programming][Programming]]
   - [[#yasnippets][=yasnippets=]]
   - [[#flycheck][=flycheck=]]
   - [[#undo-tree][=undo-tree=]]
+  - [[#aggressive-indent][=aggressive-indent=]]
+  - [[#mytoggle-comment-on-line][=my/toggle-comment-on-line=]]
 - [[#auto-completion][Auto Completion]]
   - [[#company-mode][=company-mode=]]
     - [[#company-quickhelp][=company-quickhelp=]]
@@ -50,7 +50,8 @@
   - [[#paren][=paren=]]
   - [[#beacon][=beacon=]]
   - [[#rainbow-delimiters][=rainbow-delimiters=]]
-- [[#org-mode][=org-mode=]]
+- [[#org-mode][Org-Mode]]
+  - [[#org-mode-1][=org-mode=]]
   - [[#toc-org][=toc-org=]]
   - [[#org-bullets][=org-bullets=]]
   - [[#revealjs][=reveal.js=]]
@@ -127,9 +128,7 @@ By default, Emacs comes with the Emacs Lisp Package Archive (ELPA). As the packa
 #+BEGIN_SRC emacs-lisp
   (setq-default package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                                    ("melpa" . "https://melpa.org/packages/")
-                                   ("org" . "https://orgmode.org/elpa/")
-                                   ;; ("marmalade" . "https://marmalade-repo.org/packages/")
-                                   ))
+                                   ("org" . "https://orgmode.org/elpa/")))
 #+END_SRC
 
 ** Prepare Packages for Configuration
@@ -419,8 +418,7 @@ The =try= package let's you try new packages without installed them. On the next
     ("C-h i" . counsel-info-lookup-symbol)
     ("C-h u" . counsel-unicode-char)
     ("M-x" . counsel-M-x)
-    ("M-v" . counsel-yank-pop)
-    )
+    ("M-v" . counsel-yank-pop))
 
   (use-package ivy
     :diminish
@@ -431,13 +429,11 @@ The =try= package let's you try new packages without installed them. On the next
     (setq ivy-initial-inputs-alist nil)
     (setq ivy-display-style 'fancy)
     (setq ivy-use-virtual-buffers t)
-    (setq ivy-count-format "(%d/%d) ")
-    )
+    (setq ivy-count-format "(%d/%d) "))
 
   (use-package swiper
     :bind
-    ("C-s" . swiper-isearch)
-    )
+    ("C-s" . swiper-isearch))
 #+END_SRC
 
 * Navigation
@@ -500,29 +496,6 @@ Delete trailing whitespace
     (global-hungry-delete-mode))
 #+END_SRC
 
-** =aggressive-indent=
-
-[[https://github.com/joaotavora/aggressive-indent-mode][More Information]]
-
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package aggressive-indent
-    ;; :hook
-    ;; (python-mode . aggressive-indent-mode)
-    ;; )
-#+END_SRC
-
-** =my/toggle-comment-on-line=
-
-Comment or uncomment the current line. Bind to ~C-;~.
-
-#+BEGIN_SRC emacs-lisp
-  (defun my/toggle-comment-on-line ()
-    (interactive)
-    (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
-
-  (bind-key "C-;" 'my/toggle-comment-on-line)
-#+END_SRC
-
 * Programming
 ** =yasnippets=
 
@@ -562,8 +535,29 @@ Flycheck is a modern on-the-fly syntax checking extension for GNU Emacs, intende
     :bind
     ("C-x u" . undo-tree-visualize)
     :config
-    (global-undo-tree-mode)
-    )
+    (global-undo-tree-mode))
+#+END_SRC
+
+** =aggressive-indent=
+
+[[https://github.com/joaotavora/aggressive-indent-mode][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package aggressive-indent
+    ;; :hook
+    ;; (python-mode . aggressive-indent-mode))
+#+END_SRC
+
+** =my/toggle-comment-on-line=
+
+Comment or uncomment the current line. Bind to ~C-;~.
+
+#+BEGIN_SRC emacs-lisp
+  (defun my/toggle-comment-on-line ()
+    (interactive)
+    (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
+
+  (bind-key "C-;" 'my/toggle-comment-on-line)
 #+END_SRC
 
 * Auto Completion
@@ -594,8 +588,7 @@ I am using =company= for autocompletion.
 
   (use-package company-quickhelp
     :config
-    (company-quickhelp-mode)
-    )
+    (company-quickhelp-mode))
 #+END_SRC
 
 *** =company-statistics=
@@ -627,8 +620,7 @@ Follow [[https://wfbroderick.com/2019-Jan-01.html][this guide]] to set up with c
     (python-mode . my/python-mode-hook)
     (python-mode . jedi:setup)
     (conda-postactivate . jedi:stop-server)
-    (conda-postdeactivate . jedi:stop-server)
-    )
+    (conda-postdeactivate . jedi:stop-server))
 #+END_SRC
 
 * OS Specific Settings
@@ -720,8 +712,7 @@ Not Implemented
   ;;(use-package kaolin-themes)
   (use-package gruvbox-theme
     :config
-    (load-theme 'gruvbox)
-    )
+    (load-theme 'gruvbox))
 #+END_SRC
 
 ** =paren=
@@ -736,8 +727,7 @@ Highlight matching parenthesis.
     (show-paren-mode t)
     (set-face-background 'show-paren-match "#EC7063")
     (set-face-foreground 'show-paren-match "Red1")
-    (set-face-attribute 'show-paren-match nil :weight 'extra-bold)
-    )
+    (set-face-attribute 'show-paren-match nil :weight 'extra-bold))
 #+END_SRC
 
 ** =beacon=
@@ -748,8 +738,7 @@ Highlight matching parenthesis.
   (use-package beacon
     :config
     (beacon-mode 1)
-    (setq beacon-color "#39FF14")
-    )
+    (setq beacon-color "#39FF14"))
 #+END_SRC
 
 ** =rainbow-delimiters=
@@ -759,11 +748,11 @@ Highlight matching parenthesis.
 #+BEGIN_SRC emacs-lisp
     (use-package rainbow-delimiters
       :hook
-      (prog-mode . rainbow-delimiters-mode)
-      )
+      (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
 
-* =org-mode=
+* Org-Mode
+** =org-mode=
 
 Install org-mode from the org package repository.
 
@@ -773,9 +762,7 @@ Install org-mode from the org package repository.
   (use-package org
     :pin org
     :config
-    ;; add "<s <TAB>" for code block completion
-    (add-to-list 'org-modules 'org-tempo)
-    )
+    (add-to-list 'org-modules 'org-tempo)) ;; add "<s <TAB>" for code block completion
 #+END_SRC
 
 ** =toc-org=
@@ -812,8 +799,7 @@ Install reveal.js from [[https://github.com/hakimel/reveal.js/][here]]. Then, in
     :ensure ox-reveal
     :config
     (setq org-reveal-root "/Users/simenojensen/.emacs.d/reveal.js/")
-    (setq org-reveal-mathjax t)
-    )
+    (setq org-reveal-mathjax t))
 #+END_SRC
 
 ** =htmlize=
@@ -936,8 +922,7 @@ Rename open file and change buffer name as well
                                (message "->> )")
                                (forward-char 1)
                                (backward-list 1)
-                               (backward-char 1)))
-                        ))))))
+                               (backward-char 1)))))))))
  #+END_SRC
 
 ** =session-save=
@@ -987,8 +972,7 @@ Rename open file and change buffer name as well
 #+BEGIN_SRC emacs-lisp
   (use-package google-this
     :config
-    (google-this-mode t)
-    )
+    (google-this-mode t))
 #+END_SRC
 
 * Keybindings
@@ -1045,8 +1029,7 @@ The =which-key= package automatically displays potential command information as 
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :bind
-    ("C-x g" . magit-status)
-    )
+    ("C-x g" . magit-status))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1058,8 +1041,7 @@ The =which-key= package automatically displays potential command information as 
     (setq TeX-parse-self t)
     (setq TeX-save-query nil)
     (setq TeX-PDF-mode t)
-    (setq-default TeX-master nil)
-    )
+    (setq-default TeX-master nil))
 #+END_SRC
 
 * Epilogue
