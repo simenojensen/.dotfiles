@@ -159,7 +159,7 @@ By default, Emacs comes with the Emacs Lisp Package Archive (ELPA). As the packa
 
 - By setting =use-package-always-ensure= to =t=, =use-package= will install packages that are not already installed.
 
- [[https://github.com/jwiegley/use-package#package-installation][More Information]]
+[[https://github.com/jwiegley/use-package#package-installation][More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (require 'use-package-ensure)
@@ -225,7 +225,7 @@ The =try= package let's you try new packages without installed them. On the next
 
 * More Convenient Default Settings
 
-- Set frame title to =[user@hostname]=
+- Set frame title to =[user@hostname]*BufferName*=
 
 #+BEGIN_SRC emacs-lisp
   (setq-default frame-title-format (list "[" user-login-name "@" (system-name) "] %b"))
