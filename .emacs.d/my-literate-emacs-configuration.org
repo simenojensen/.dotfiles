@@ -20,7 +20,6 @@
   - [[#diminish][=diminish=]]
   - [[#try][=try=]]
 - [[#more-convenient-default-settings][More Convenient Default Settings]]
-- [[#disable-guis][Disable GUIs]]
 - [[#functionality][Functionality]]
   - [[#window-navigation][Window Navigation]]
   - [[#ivy--counsel--swiper][=Ivy= / =Counsel= / =Swiper=]]
@@ -329,7 +328,6 @@ The =try= package let's you try new packages without installed them. On the next
   (global-hl-line-mode t)
 #+END_SRC
 
-
 - When saving a file, update the time stamp of the first 8 lines to the current time.
 
 #+BEGIN_SRC emacs-lisp
@@ -341,8 +339,6 @@ The =try= package let's you try new packages without installed them. On the next
 #+BEGIN_SRC emacs-lisp
   (setq large-file-warning-threshold 100000000)
 #+END_SRC
-
-* Disable GUIs
 
 - Don't show the menu bar.
 
