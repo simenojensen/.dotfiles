@@ -71,6 +71,7 @@
 ** Startup Benchmarking
 
 First, declare a hook which will benchmark the startup process. It reports how long the it took to start up, and how many garbage collections were performed.
+
 [[https://blog.d46.us/advanced-emacs-startup/][More Information]]
 
 #+BEGIN_SRC emacs-lisp
