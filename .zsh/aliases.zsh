@@ -40,3 +40,6 @@ alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resource
 # Hide/show all desktop icons (useful when presenting)
 alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
 alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
+
+# Work
+alias routing_table="conda activate ping; cd ~/Desktop/raalabs/scripts/; ./routing_table.py; conda activate py3"

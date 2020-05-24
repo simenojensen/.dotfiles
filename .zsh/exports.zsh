@@ -92,8 +92,15 @@ source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # you may need to add the following to your .zshenv:
 # export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=/usr/local/share/zsh-syntax-highlighting/highlighters
 
+#findutils
+PATH="/usr/local/opt/findutils/libexec/gnubin:$PATH"
+
 # openVPN
 export PATH="/usr/local/opt/openvpn/sbin:$PATH"
+
+# qt
+export PATH="/usr/local/opt/qt/bin:$PATH"
+export PKG_CONFIG_PATH="/usr/local/opt/qt/lib/pkgconfig"
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!

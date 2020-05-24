@@ -6,13 +6,11 @@
 * Table of Contents :TOC_3:
 - [[#performance-optimization][Performance Optimization]]
   - [[#startup-benchmarking][Startup Benchmarking]]
-  - [[#disable-regexps-when-parsing-filenames-during-startup][Disable regexps when Parsing Filenames during Startup.]]
   - [[#show-debugging-information][Show Debugging Information]]
   - [[#increase-garbage-collection-threshold][Increase Garbage Collection Threshold]]
 - [[#package-management][Package Management]]
   - [[#packageel][=package.el=]]
-  - [[#define-package-repositories][Define Package Repositories]]
-  - [[#security][Security]]
+  - [[#package-repositories][Package Repositories]]
   - [[#prepare-packages-for-configuration][Prepare Packages for Configuration]]
   - [[#bootstrap-use-package][Bootstrap =use-package=]]
   - [[#automatically-update-packages-with-auto-package-update][Automatically Update Packages with =auto-package-update=.]]
@@ -32,39 +30,44 @@
   - [[#expand-region][Expand region]]
   - [[#toggle-line-comment][Toggle Line Comment]]
   - [[#auto-completion][Auto Completion]]
-  - [[#reload-emacs-configurations][Reload Emacs Configurations]]
   - [[#iedit][=iedit=]]
   - [[#yasnippets][=yasnippets=]]
   - [[#hungry-delete][=hungry-delete=]]
   - [[#aggressive-indent][=aggressive-indent=]]
+  - [[#restart-emacs][=restart-emacs=]]
+  - [[#google-this][=google-this=]]
+  - [[#flycheck][=flycheck=]]
+  - [[#killing-emacs][Killing emacs]]
 - [[#os-specific-settings][OS Specific Settings]]
   - [[#macos][macOS]]
   - [[#windows][Windows]]
   - [[#linux][Linux]]
-- [[#keybindings][Keybindings]]
-  - [[#which-key][which-key]]
-  - [[#list-of-bindings][List of Bindings]]
 - [[#org-mode][org-mode]]
   - [[#toc-org][=toc-org=]]
   - [[#org-bullets][=org-bullets=]]
   - [[#revealjs][=reveal.js=]]
 - [[#appearance][Appearance]]
   - [[#themes][Themes]]
+  - [[#beacon][Beacon]]
 - [[#coding][Coding]]
+  - [[#general][General]]
+    - [[#insert-shebang][=insert-shebang=]]
   - [[#python][Python]]
     - [[#condael][=conda.el=]]
-    - [[#fly-check][=fly-check=]]
-    - [[#company-anaconda][company-anaconda]]
+    - [[#company-jedi][=company-jedi=]]
+- [[#elisp-functions][Elisp functions]]
+  - [[#rename-open-file-and-change-buffer-name-as-well][Rename open file and change buffer name as well]]
+  - [[#move-to-matching-parenthesis][Move to matching parenthesis]]
+- [[#desktop][Desktop]]
+  - [[#minimal-setup][Minimal Setup]]
+- [[#keybindings][Keybindings]]
+  - [[#which-key][which-key]]
+  - [[#list-of-bindings][List of Bindings]]
+- [[#experimental][Experimental]]
 - [[#epilogue][Epilogue]]
-  - [[#close-file-name-handler-alist-expression][Close =file-name-handler-alist= Expression]]
   - [[#sensible-garbage-collection-threshold][Sensible Garbage Collection Threshold]]
 
 * Performance Optimization
-
-#+BEGIN_SRC emacs-lisp
-  ;;; -*- lexical-binding: t -*-
-#+END_SRC
-
 ** Startup Benchmarking
 
 First, declare a hook which will benchmark the startup process. It reports how long the it took to start up, and how many garbage collections were performed.
@@ -80,29 +83,12 @@ First, declare a hook which will benchmark the startup process. It reports how l
                        gcs-done)))
 #+END_SRC
 
-** Disable regexps when Parsing Filenames during Startup.
-
-Normally,  =file-name-handler-alist= is set to:
-
-#+BEGIN_SRC :tangle no
-# (("\\`/[^/]*\\'" . tramp-completion-file-name-handler)
-# ("\\`/[^/|:][^/|]*:" . tramp-file-name-handler)
-# ("\\`/:" . file-name-non-special))
-#+END_SRC
-
-This means Emacs has to run these on every =.el= and =.elc= file loaded during startup. By wrapping the Emacs configuration init code,  =(let ((file-name-handler-alist nil)) <init file>)=, the startup load time can be improved. The expression gets closed in the Epilogue.
-[[https://www.reddit.com/r/emacs/comments/3kqt6e/2_easy_little_known_steps_to_speed_up_emacs_start/][More Information]]
-
-#+BEGIN_SRC emacs-lisp
-  (let ((file-name-handler-alist nil))
-#+END_SRC
-
 ** Show Debugging Information
 
 Toggle this to receive more information when encountering startup errors.
 
 #+BEGIN_SRC emacs-lisp
-(setq debug-on-error t)
+  (setq debug-on-error t)
 #+END_SRC
 
 ** Increase Garbage Collection Threshold
@@ -111,7 +97,7 @@ When Emacs loads files, packages or libraries, the data is placed in normal stor
 [[https://github.com/zzamboni/dot-emacs/blob/master/init.org#performance-optimization][More Information]]
 
 #+BEGIN_SRC emacs-lisp
-(setq gc-cons-threshold most-positive-fixnum)
+  (setq gc-cons-threshold most-positive-fixnum)
 #+End_SRC
 
 * Package Management
@@ -124,7 +110,7 @@ By default, Emacs 24 or later comes with a built-in package management system (=
   (require 'package)
 #+END_SRC
 
-** Define Package Repositories
+** Package Repositories
 
 By default, Emacs comes with the Emacs Lisp Package Archive (ELPA). As the packages need to be FSF-sanctioned, there aren't that many to choose from. By adding the Milkypostman's Emacs Lisp Package Archive ([[https://melpa.org/][MELPA]]), an enormous amount of packages become available. Remember to add ~https~ to urls.
 
@@ -134,29 +120,6 @@ By default, Emacs comes with the Emacs Lisp Package Archive (ELPA). As the packa
                                    ("org" . "https://orgmode.org/elpa/")
                                    ;; ("marmalade" . "https://marmalade-repo.org/packages/")
                                    ))
-#+END_SRC
-
-** Security
-
-Installing un-signed code into the editor that was downloaded over an unencrypted, unauthenticated transport like HTTP, might lead to installing malware.
-[[https://glyph.twistedmatrix.com/2015/11/editor-malware.html][More Information]]
-
-#+BEGIN_SRC emacs-lisp
-  (setq tls-checktrust t)
-
-  ;; This snippet is ready to work in both UNIX-like and Windows OS
-  (let ((trustfile
-         (replace-regexp-in-string
-          "\\\\" "/"
-          (replace-regexp-in-string
-           "\n" ""
-           (shell-command-to-string (concat "python3 -m certifi"))))))
-    (setq tls-program
-          (list
-           (format "gnutls-cli%s --x509cafile %s -p %%p %%h"
-                   (if (eq window-system 'w32) ".exe" "") trustfile)))
-    ;; (setq gnutls-verify-error t)
-    (setq gnutls-trustfiles (list trustfile)))
 #+END_SRC
 
 ** Prepare Packages for Configuration
@@ -175,9 +138,7 @@ Installing un-signed code into the editor that was downloaded over an unencrypte
 
 ** Bootstrap =use-package=
 
-- The =use-package= macro allows cleaner configuration of package loading and installation.
-[[https://github.com/jwiegley/use-package][
-More Information]]
+- The =use-package= macro allows cleaner configuration of package loading and installation. [[https://github.com/jwiegley/use-package][More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (when (not (package-installed-p 'use-package))
@@ -188,10 +149,11 @@ More Information]]
 #+END_SRC
 
 - By setting =use-package-always-ensure= to =t=, =use-package= will install packages that are not already installed.
+[[https://github.com/jwiegley/use-package#package-installation][More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (require 'use-package-ensure)
-  (setq-default use-package-always-ensure t)
+  (setq use-package-always-ensure t)
 #+END_SRC
 
 ** Automatically Update Packages with =auto-package-update=.
@@ -261,6 +223,12 @@ The =try= package let's you try new packages without installed them. On the next
     (global-display-line-numbers-mode))
 #+END_SRC
 
+- Display columns numbers
+
+#+BEGIN_SRC emacs-lisp
+  (setq column-number-mode t)
+#+END_SRC
+
 - Don't show the startup message. =inhibit-startup-message= and =inhibit-splash-screen= are aliases for this variable.
 
 #+BEGIN_SRC emacs-lisp
@@ -280,10 +248,16 @@ The =try= package let's you try new packages without installed them. On the next
   (load custom-file)
 #+END_SRC
 
+- Disable lock files
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default create-lockfiles nil)
+#+END_SRC
+
 - Save automatically generated backup files to =~/.emacs.d/backups/=.
 
 #+BEGIN_SRC emacs-lisp
-  (setq backup-directory-alist '(("." . "/Users/simenojensen/.emacs.d/backups")))
+  (setq-default backup-directory-alist '(("." . "/Users/simenojensen/.emacs.d/backups")))
 #+END_SRC
 
 - Set the column width to 80 characters.
@@ -295,7 +269,7 @@ The =try= package let's you try new packages without installed them. On the next
 - Prefer lines to wrap.
 
 #+BEGIN_SRC emacs-lisp
-  (global-visual-line-mode 1)
+  (global-visual-line-mode t)
 #+END_SRC
 
 - Don't use hard tabs.
@@ -328,12 +302,6 @@ The =try= package let's you try new packages without installed them. On the next
   (global-auto-revert-mode t)
 #+END_SRC
 
-- Save window and frame configuration.
-
-#+BEGIN_SRC emacs-lisp
-  (desktop-save-mode t)
-#+END_SRC
-
 - Save position of the point in file.
 
 #+BEGIN_SRC emacs-lisp
@@ -345,6 +313,7 @@ The =try= package let's you try new packages without installed them. On the next
 #+BEGIN_SRC emacs-lisp
   (global-hl-line-mode t)
 #+END_SRC
+
 
 - When saving a file, update the time stamp of the first 8 lines to the current time.
 
@@ -430,12 +399,11 @@ Built-in =winner-mode= for remembering previous window actions.
   (use-package counsel
     :bind
     ("C-x C-f" . counsel-find-file)
-    ("<f1> f" . counsel-describe-function)
-    ("<f1> v" . counsel-describe-variable)
-    ("<f1> l" . counsel-find-library)
-    ("<f1> i" . counsel-info-lookup-symbol)
-    ("<f1> u" . counsel-unicode-char)
-    ("<f1> j" . counsel-set-variable)
+    ("C-h f" . counsel-describe-function)
+    ("C-h v" . counsel-describe-variable)
+    ("C-h l" . counsel-find-library)
+    ("C-h i" . counsel-info-lookup-symbol)
+    ("C-h u" . counsel-unicode-char)
     ("M-x" . counsel-M-x)
     ("M-v" . counsel-yank-pop)
     )
@@ -471,6 +439,7 @@ Built-in =winner-mode= for remembering previous window actions.
     (global-undo-tree-mode)
     )
 #+END_SRC
+
 ** Expand region
 
 =expand-region= expands your marked region around the cursor semantically depending on mode.
@@ -499,24 +468,35 @@ I will be using =company= for autocompletion.
 
 #+BEGIN_SRC emacs-lisp
   (use-package company
+    :diminish
     :config
     (setq-default company-idle-delay 0)
     (setq company-minimum-prefix-length 3)
-    :hook
-    (after-init . global-company-mode)
+    (global-company-mode t)
+    :bind (:map company-active-map
+           ("C-n" . company-select-next)
+           ("C-p" . company-select-previous))
     )
 #+END_SRC
 
-** Reload Emacs Configurations
-
-This function reloads =~/.emacs.d/init.el=.
+[[https://github.com/company-mode/company-quickhelp][More Information]]
 
 #+BEGIN_SRC emacs-lisp
-  (defun my/reload-emacs-configuration ()
-    "Reloads init.el."
-    (interactive)
-    (load-file "~/.emacs.d/init.el"))
-  #+END_SRC
+  (use-package pos-tip)
+
+  (use-package company-quickhelp
+    :config
+    (company-quickhelp-mode)
+    )
+#+END_SRC
+
+[[https://github.com/company-mode/company-statistics][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+(use-package company-statistics
+  :config
+  (company-statistics-mode))
+#+END_SRC
 
 ** =iedit=
 
@@ -536,6 +516,7 @@ This function reloads =~/.emacs.d/init.el=.
 
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
+    :diminish
     :config
     (use-package yasnippet-snippets)
     (yas-global-mode 1))
@@ -557,8 +538,51 @@ Delete trailing whitespace
 
 #+BEGIN_SRC emacs-lisp
   ;; (use-package aggressive-indent
-  ;; :config
-  ;; (global-aggressive-indent-mode 1))
+    ;; :hook
+    ;; (python-mode . aggressive-indent-mode)
+    ;; )
+#+END_SRC
+
+** =restart-emacs=
+
+Restart Emacs from within Emacs.
+[[https://github.com/iqbalansari/restart-emacs][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package restart-emacs)
+#+END_SRC
+
+** =google-this=
+
+[[http://pragmaticemacs.com/emacs/google-search-from-inside-emacs/][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package google-this
+    :config
+    (google-this-mode t)
+    )
+#+END_SRC
+
+** =flycheck=
+
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :init
+    (global-flycheck-mode))
+#+END_SRC
+
+** Killing emacs
+
+Do not confirm when killing emacs.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default confirm-kill-emacs nil)
+#+END_SRC
+
+Do not confirm when killing processes.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default confirm-kill-processes nil)
 #+END_SRC
 
 * OS Specific Settings
@@ -605,11 +629,21 @@ Lastly, we make sure the =$PATH= is loaded from the default shell.
 [[https://github.com/purcell/exec-path-from-shell][More Information]]
 
 #+BEGIN_SRC emacs-lisp
-  (use-package exec-path-from-shell
-    :defer nil
-    :config
-    (exec-path-from-shell-initialize)
-    )
+    (use-package exec-path-from-shell
+      :defer nil
+      :config
+      (exec-path-from-shell-initialize)
+      (exec-path-from-shell-copy-env "AIRTABLE_API_KEY")
+      (exec-path-from-shell-copy-env "TSI_ENVIROMENT")
+      (exec-path-from-shell-copy-env "TSI_TENANT_ID")
+      (exec-path-from-shell-copy-env "TSI_CLIENT_ID")
+      (exec-path-from-shell-copy-env "TSI_CLIENT_SECRET")
+      (exec-path-from-shell-copy-env "TSI_APPLICATION_NAME")
+      (exec-path-from-shell-copy-env "VIRTUAL_ENV")
+      (exec-path-from-shell-copy-env "LANG") ;; unsure
+      (exec-path-from-shell-copy-env "LC_ALL") ;; unsure
+      (exec-path-from-shell-copy-env "LC_CTYPE") ;; unsure
+      )
   )
 #+END_SRC
 
@@ -628,54 +662,6 @@ Not Implemented
 #+BEGIN_SRC emacs-lisp
   ((eq system-type 'gnu/linux))
  )
-#+END_SRC
-
-* Keybindings
-** which-key
-
-The =which-key= package automatically displays potential command information as command keys are typed. This makes it easy to explore Emacs functionality.
-[[https://github.com/justbur/emacs-which-key][More Information]]
-
-#+BEGIN_SRC emacs-lisp
-  (use-package which-key
-    :diminish which-key-mode
-    :config
-    (setq which-key-idle-delay 0.5)
-    (which-key-mode))
-#+END_SRC
-
-** List of Bindings
-
-- Go to line number.
-
-#+BEGIN_SRC emacs-lisp
-  (bind-key "M-g" 'goto-line)
-#+END_SRC
-
-- Create new frame (emulate macOS' "new window" shortcut).
-
-#+BEGIN_SRC emacs-lisp
-  (bind-key "M-n" 'make-frame)
-#+END_SRC
-
-- Revert Buffer
-
-#+BEGIN_SRC emacs-lisp
-  (bind-key "M-r" 'revert-buffer)
-#+END_SRC
-
-
-- Focus next frame (emulate macOS' "focus next window" shortcut).
-
-#+BEGIN_SRC emacs-lisp
-  (bind-key "M-`" 'other-frame)
-#+END_SRC
-
-- =crux= sets ~C-a~ to move to the first non-whitespace character on a line, and then to toggle between that and the beginning of the line.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package crux
-    :bind ("C-a" . crux-move-beginning-of-line))
 #+END_SRC
 
 * org-mode
@@ -698,14 +684,15 @@ Install the =toc-org= package to automatically generate an updated table of cont
 #+BEGIN_SRC emacs-lisp
   (use-package toc-org
     :after org
-    :hook (org-mode . toc-org-enable))
+    :hook
+    (org-mode . toc-org-enable))
 #+END_SRC
 
 ** =org-bullets=
 
 #+BEGIN_SRC emacs-lisp
   (use-package org-bullets
-    :hook (org-mode . (lambda () (org-bullets-mode 1))
+    :hook (org-mode . (lambda () (org-bullets-mode t))
                     ))
  #+END_SRC
 
@@ -737,22 +724,62 @@ Install reveal.js from [[https://github.com/hakimel/reveal.js/][here]]. Then, in
     )
 #+END_SRC
 
-* Coding
-** Python
-
-Set the python interpreter to =IPython=.
-[[https://www.emacswiki.org/emacs/PythonProgrammingInEmacs][More Information]]
+- Highlight matching parenthesis
 
 #+BEGIN_SRC emacs-lisp
-  (setq python-shell-interpreter "ipython"
-         python-shell-interpreter-args "--simple-prompt -i")
+  (use-package paren
+    :config
+    (show-paren-mode t)
+    (set-face-background 'show-paren-match "#EC7063")
+    (set-face-foreground 'show-paren-match "Red1")
+    (set-face-attribute 'show-paren-match nil :weight 'extra-bold)
+    )
 #+END_SRC
 
-Set run python script keybinding.
-[[https://github.com/jorgenschaefer/elpy/issues/69][More Information]]
+** Beacon
+
+[[https://github.com/Malabarba/beacon][More Information]]
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "<f5>") (kbd "C-u C-c C-c"))
+  (use-package beacon
+    :config
+    (beacon-mode 1)
+    (setq beacon-color "#39FF14")
+    )
+#+END_SRC
+
+* Coding
+** General
+
+*** =insert-shebang=
+
+[[https://carlfg.wordpress.com/2013/10/21/insert-shebang-extension-for-emacs/][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package insert-shebang)
+#+END_SRC
+
+** Python
+
+[[https://www.emacswiki.org/emacs/PythonProgrammingInEmacs#toc30][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (setq python-shell-interpreter "jupyter"
+        python-shell-interpreter-args "console --simple-prompt"
+        python-shell-prompt-detect-failure-warning nil)
+
+  ;; (setq python-shell-interpreter "ipython"
+  ;;       python-shell-interpreter-args "--simple-prompt -i")
+
+  (defun my/add-python-shell-completion-native-disabled-interpreters ()
+    (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter"))
+
+  (add-hook 'python-mode-hook 'my/add-python-shell-completion-native-disabled-interpreters)
+
+  (use-package ein
+    :config
+    (setq ein:output-area-inlined-images t)
+    )
 #+END_SRC
 
 *** =conda.el=
@@ -778,38 +805,213 @@ Usage:
     )
 #+END_SRC
 
-*** =fly-check=
+*** =company-jedi=
 
-[[https://www.flycheck.org/en/latest/][More Information]]
+[[https://github.com/emacsorphanage/company-jedi][More Information]]
 
 #+BEGIN_SRC emacs-lisp
-  (use-package flycheck
-    :init
-    (global-flycheck-mode t)
+  (use-package company-jedi
+    :diminish
     :config
-    (setq flycheck-checker-error-threshold 1000)
+    (setq-default jedi:complete-on-dot t)
+    (eval-after-load "company-jedi"
+      '(setq jedi:server-command (list "/usr/local/Caskroom/miniconda/base/envs/emacs-jedi/bin/python" jedi:server-script)))
+    (defun my/python-mode-hook ()
+      (add-to-list 'company-backends 'company-jedi))
+    :hook
+    (python-mode . my/python-mode-hook)
+    (python-mode . jedi:setup)
+    (conda-postactivate . jedi:stop-server)
+    (conda-postdeactivate . jedi:stop-server)
     )
 #+END_SRC
 
-*** company-anaconda
+* Elisp functions
+** Rename open file and change buffer name as well
 
 #+BEGIN_SRC emacs-lisp
-  (use-package company-anaconda
+  ;; source: http://steve.yegge.googlepages.com/my-dot-emacs-file
+  (defun my/rename-file-and-buffer (new-name)
+    "Renames both current buffer and file it's visiting to NEW-NAME."
+    (interactive "sNew name: ")
+    (let ((name (buffer-name))
+          (filename (buffer-file-name)))
+      (if (not filename)
+          (message "Buffer '%s' is not visiting a file!" name)
+        (if (get-buffer new-name)
+            (message "A buffer named '%s' already exists!" new-name)
+          (progn
+            (rename-file filename new-name 1)
+            (rename-buffer new-name)
+            (set-visited-file-name new-name)
+            (set-buffer-modified-p nil))))))
+
+#+END_SRC
+
+** Move to matching parenthesis
+
+[[https://www.emacswiki.org/emacs/NavigatingParentheses#toc8][More Information]]
+
+ #+BEGIN_SRC emacs-lisp
+    (defun goto-match-paren (arg)
+        "Go to the matching parenthesis if on parenthesis. Else go to the
+      opening parenthesis one level up."
+        (interactive "p")
+        (cond ((looking-at "\\s\(") (forward-list 1))
+              (t
+               (backward-char 1)
+               (cond ((looking-at "\\s\)")
+                      (forward-char 1) (backward-list 1))
+                     (t
+                      (while (not (looking-at "\\s("))
+                        (backward-char 1)
+                        (cond ((looking-at "\\s\)")
+                               (message "->> )")
+                               (forward-char 1)
+                               (backward-list 1)
+                               (backward-char 1)))
+                        ))))))
+ #+END_SRC
+
+* Desktop
+** Minimal Setup
+
+[[https://www.emacswiki.org/emacs/Desktop][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  ;; use only one desktop
+  (setq desktop-path '("~/.emacs.d/"))
+  (setq desktop-dirname "~/.emacs.d/")
+  (setq desktop-base-file-name "emacs-desktop")
+
+  ;; remove desktop after it's been read
+  ;; (add-hook 'desktop-after-read-hook
+            ;; '(lambda ()
+               ;; desktop-remove clears desktop-dirname
+               ;; (setq desktop-dirname-tmp desktop-dirname)
+               ;; (desktop-remove)
+               ;; (setq desktop-dirname desktop-dirname-tmp)))
+
+  (defun saved-session ()
+    (file-exists-p (concat desktop-dirname "/" desktop-base-file-name)))
+
+  ;; use session-restore to restore the desktop manually
+  (defun session-restore ()
+    "Restore a saved emacs session."
+    (interactive)
+    (if (saved-session)
+        (desktop-read)
+      (message "No desktop found.")))
+
+  ;; use session-save to save the desktop manually
+  (defun session-save ()
+    "Save an emacs session."
+    (interactive)
+    (if (saved-session)
+        (if (y-or-n-p "Overwrite existing desktop? ")
+            (desktop-save-in-desktop-dir)
+          (message "Session not saved."))
+    (desktop-save-in-desktop-dir)))
+
+  ;; ask user whether to restore desktop at start-up
+  (add-hook 'after-init-hook
+            '(lambda ()
+               (if (saved-session)
+                   (if (y-or-n-p "Restore desktop? ")
+                       (session-restore)))))
+#+END_SRC
+
+* Keybindings
+** which-key
+
+The =which-key= package automatically displays potential command information as command keys are typed. This makes it easy to explore Emacs functionality.
+[[https://github.com/justbur/emacs-which-key][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :diminish which-key-mode
     :config
-    (add-to-list 'company-backends 'company-anaconda)
-    :hook (python-mode . anaconda-mode)
+    (setq which-key-idle-delay 0.5)
+    (which-key-mode))
+#+END_SRC
+
+** List of Bindings
+
+- Go to line number.
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "M-g" 'goto-line)
+#+END_SRC
+
+- Create new frame (emulate macOS' "new window" shortcut).
+
+#+BEGIN_SRC emacs-lisp
+  ;; (bind-key "M-n" 'make-frame)
+#+END_SRC
+
+- Revert Buffer
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "M-r" 'revert-buffer)
+#+END_SRC
+
+
+- Focus next frame (emulate macOS' "focus next window" shortcut).
+
+#+BEGIN_SRC emacs-lisp
+  ;; (bind-key "M-`" 'other-frame)
+#+END_SRC
+
+- =crux= sets ~C-a~ to move to the first non-whitespace character on a line, and then to toggle between that and the beginning of the line.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package crux
+    :bind ("C-a" . crux-move-beginning-of-line))
+#+END_SRC
+
+- =goto-match-paren=
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "C-M-n" 'goto-match-paren)
+#+END_SRC
+
+- =ibuffer=
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "C-x C-b" 'ibuffer)
+#+END_SRC
+
+* Experimental
+
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :bind
+    ("C-x g" . magit-status)
     )
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+    (use-package rainbow-delimiters
+      :hook
+      (prog-mode . rainbow-delimiters-mode)
+      )
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package tex-site
+    :ensure auctex
+    :mode ("\\.tex\\'" . latex-mode)
+    :config
+    (setq TeX-auto-save t)
+    (setq TeX-parse-self t)
+    (setq TeX-save-query nil)
+    (setq TeX-PDF-mode t)
+    (setq-default TeX-master nil)
+    )
+#+END_SRC
+
 
 * Epilogue
-** Close =file-name-handler-alist= Expression
-
-Here, the =file-name-handler-alist= expression gets closed out.
-
-#+BEGIN_SRC emacs-lisp
-  )
-#+END_SRC
-
 ** Sensible Garbage Collection Threshold
 
 Here, the =gc-cons-threshold= is set to a sensible value for normal use.
