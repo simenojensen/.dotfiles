@@ -95,6 +95,7 @@ Toggle this to receive more information when encountering startup errors.
 ** Increase Garbage Collection Threshold
 
 When Emacs loads files, packages or libraries, the data is placed in normal storage. When the normal storage runs out, Emacs asks the operating system to allocate more memory. This process is known as garbage collection, and as the default value for Emacs is only ~800kB, it happens quite frequently during startup. As such, we can improve startup performance by increasing this value. In the Epilogue, this value is lowered back down to a sensible default.
+
 [[https://github.com/zzamboni/dot-emacs/blob/master/init.org#performance-optimization][More Information]]
 
 #+BEGIN_SRC emacs-lisp
@@ -105,6 +106,7 @@ When Emacs loads files, packages or libraries, the data is placed in normal stor
 ** =package.el=
 
 By default, Emacs 24 or later comes with a built-in package management system (=package.el=). To add further functionality such as adding package repositories and tweaking package configurations, =package.el= needs to be loaded in the =init.el= file during startup.
+
 [[https://www.gnu.org/software/emacs/manual/html_mono/emacs.html#Package-Installation][More Information]]
 
 #+BEGIN_SRC emacs-lisp
@@ -149,8 +151,7 @@ By default, Emacs comes with the Emacs Lisp Package Archive (ELPA). As the packa
     (require 'use-package))
 #+END_SRC
 
-- By setting =use-package-always-ensure= to =t=, =use-package= will install packages that are not already installed.
-[[https://github.com/jwiegley/use-package#package-installation][More Information]]
+- By setting =use-package-always-ensure= to =t=, =use-package= will install packages that are not already installed. [[https://github.com/jwiegley/use-package#package-installation][More Information]]
 
 #+BEGIN_SRC emacs-lisp
   (require 'use-package-ensure)
