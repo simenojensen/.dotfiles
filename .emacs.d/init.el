@@ -154,13 +154,23 @@
   :config
   (global-hungry-delete-mode))
 
+(use-package projectile
+  :ensure t
+  :config
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (setq projectile-completion-system 'ivy)
+  (projectile-mode +1))
+
 (use-package yasnippet
   :diminish
   :config
-  (use-package yasnippet-snippets)
+  (use-package yasnippet-snippets
+    :diminish)
   (yas-global-mode 1))
 
 (use-package flycheck
+  :diminish
   :init
   (global-flycheck-mode))
 
@@ -221,7 +231,7 @@
 
 (customize-set-variable 'mac-command-modifier 'meta)
 (customize-set-variable 'mac-option-modifier 'alt)
-(customize-set-variable 'mac-right-option-modifier 'super)
+(customize-set-variable 'mac-right-command-modifier 'super)
 
 (bind-key "M-=" 'text-scale-increase)
 (bind-key "M--" 'text-scale-decrease)
@@ -238,11 +248,11 @@
     :config
     (exec-path-from-shell-initialize)
     (exec-path-from-shell-copy-env "AIRTABLE_API_KEY")
-    (exec-path-from-shell-copy-env "TSI_ENVIROMENT")
-    (exec-path-from-shell-copy-env "TSI_TENANT_ID")
-    (exec-path-from-shell-copy-env "TSI_CLIENT_ID")
-    (exec-path-from-shell-copy-env "TSI_CLIENT_SECRET")
-    (exec-path-from-shell-copy-env "TSI_APPLICATION_NAME")
+    (exec-path-from-shell-copy-env "TSICLIENT_ENVIRONMENT_NAME")
+    (exec-path-from-shell-copy-env "TSICLIENT_TENANT_ID")
+    (exec-path-from-shell-copy-env "TSICLIENT_CLIENT_ID")
+    (exec-path-from-shell-copy-env "TSICLIENT_CLIENT_SECRET")
+    (exec-path-from-shell-copy-env "TSICLIENT_APPLICATION_NAME")
     (exec-path-from-shell-copy-env "VIRTUAL_ENV")
     (exec-path-from-shell-copy-env "LANG") ;; unsure
     (exec-path-from-shell-copy-env "LC_ALL") ;; unsure
@@ -278,6 +288,11 @@
   :hook
   (prog-mode . rainbow-delimiters-mode))
 
+(use-package dimmer
+  :config
+  (setq dimmer-fraction 0.5)
+  (dimmer-mode t))
+
 (use-package org
   :pin org
   :config
@@ -300,17 +315,17 @@
 
 (use-package htmlize)
 
-(setq python-shell-interpreter "jupyter"
-      python-shell-interpreter-args "console --simple-prompt"
-      python-shell-prompt-detect-failure-warning nil)
+;; (setq python-shell-interpreter "jupyter"
+;;       python-shell-interpreter-args "console --simple-prompt"
+;;       python-shell-prompt-detect-failure-warning nil)
 
 ;; (setq python-shell-interpreter "ipython"
 ;;       python-shell-interpreter-args "--simple-prompt -i")
 
-(defun my/add-python-shell-completion-native-disabled-interpreters ()
-  (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter"))
+;; (defun my/add-python-shell-completion-native-disabled-interpreters ()
+;;   (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter"))
 
-(add-hook 'python-mode-hook 'my/add-python-shell-completion-native-disabled-interpreters)
+;; (add-hook 'python-mode-hook 'my/add-python-shell-completion-native-disabled-interpreters)
 
 (use-package conda
   :init
@@ -324,7 +339,21 @@
   :config
   (setq ein:output-area-inlined-images t))
 
-(use-package insert-shebang)
+;; (use-package insert-shebang)
+
+(use-package vterm
+  :config
+  (defun my/vterm ()
+    "Always start emacs with vterm in at the bottom of the screen"
+    (interactive)
+    (delete-other-windows)
+    (split-window-vertically)
+    (other-window 1)
+    (minimize-window)
+    (enlarge-window 30)
+    (vterm)))
+  ;; :hook
+  ;; (emacs-startup . my/vterm))
 
 (use-package restart-emacs)
 
@@ -396,6 +425,7 @@
                      (session-restore)))))
 
 (use-package google-this
+  :diminish
   :config
   (google-this-mode t))
 
@@ -420,6 +450,18 @@
 (use-package magit
   :bind
   ("C-x g" . magit-status))
+
+(use-package powerline
+  :config
+  (powerline-default-theme))
+
+(use-package all-the-icons)
+
+(use-package emojify
+  :hook
+  (after-init . global-emojify-mode))
+
+(use-package mode-icons)
 
 (use-package tex-site
   :ensure auctex

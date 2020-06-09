@@ -30,6 +30,8 @@
   - [[#expand-region][=expand-region=]]
   - [[#iedit][=iedit=]]
   - [[#hungry-delete][=hungry-delete=]]
+- [[#project-management][Project Management]]
+  - [[#projectile][=projectile=]]
 - [[#programming][Programming]]
   - [[#yasnippets][=yasnippets=]]
   - [[#flycheck][=flycheck=]]
@@ -62,6 +64,8 @@
   - [[#conda][=conda=]]
   - [[#ein][=ein=]]
   - [[#insert-shebang][=insert-shebang=]]
+- [[#console][Console]]
+  - [[#vterm][=vterm=]]
 - [[#added-functionality][Added Functionality]]
   - [[#restart-emacs][=restart-emacs=]]
   - [[#myrename-file-and-buffer][=my/rename-file-and-buffer=]]
@@ -73,6 +77,7 @@
   - [[#which-key][which-key]]
   - [[#list-of-bindings][List of Bindings]]
 - [[#experimental][Experimental]]
+  - [[#dumb-jump][dumb-jump]]
 - [[#epilogue][Epilogue]]
   - [[#sensible-garbage-collection-threshold][Sensible Garbage Collection Threshold]]
 
@@ -288,7 +293,7 @@ The =try= package let's you try new packages without installed them. On the next
   (setq-default fill-column 80)
 #+END_SRC
 
-- Prefer lines to wrap.
+- Wrap lines
 
 #+BEGIN_SRC emacs-lisp
   (global-visual-line-mode t)
@@ -497,6 +502,21 @@ Delete trailing whitespace
     (global-hungry-delete-mode))
 #+END_SRC
 
+* Project Management
+** =projectile=
+
+[[https://docs.projectile.mx/en/latest/][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :ensure t
+    :config
+    (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+    (setq projectile-completion-system 'ivy)
+    (projectile-mode +1))
+#+END_SRC
+
 * Programming
 ** =yasnippets=
 
@@ -508,7 +528,8 @@ Delete trailing whitespace
   (use-package yasnippet
     :diminish
     :config
-    (use-package yasnippet-snippets)
+    (use-package yasnippet-snippets
+      :diminish)
     (yas-global-mode 1))
 #+END_SRC
 
@@ -520,6 +541,7 @@ Flycheck is a modern on-the-fly syntax checking extension for GNU Emacs, intende
 
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
+    :diminish
     :init
     (global-flycheck-mode))
 #+END_SRC
@@ -643,7 +665,7 @@ By setting the ~M~ to ~⌘~, ~A~ to ~^~ (left option)  and ~S~ to ~^~ (right opt
 #+BEGIN_SRC emacs-lisp
   (customize-set-variable 'mac-command-modifier 'meta)
   (customize-set-variable 'mac-option-modifier 'alt)
-  (customize-set-variable 'mac-right-option-modifier 'super)
+  (customize-set-variable 'mac-right-command-modifier 'super)
 #+END_SRC
 
 Next, we are binding ~M-=~ to increase the font size, and ~M--~ to decrease the font size.
@@ -674,11 +696,11 @@ Lastly, we make sure the =$PATH= is loaded from the default shell.
       :config
       (exec-path-from-shell-initialize)
       (exec-path-from-shell-copy-env "AIRTABLE_API_KEY")
-      (exec-path-from-shell-copy-env "TSI_ENVIROMENT")
-      (exec-path-from-shell-copy-env "TSI_TENANT_ID")
-      (exec-path-from-shell-copy-env "TSI_CLIENT_ID")
-      (exec-path-from-shell-copy-env "TSI_CLIENT_SECRET")
-      (exec-path-from-shell-copy-env "TSI_APPLICATION_NAME")
+      (exec-path-from-shell-copy-env "TSICLIENT_ENVIRONMENT_NAME")
+      (exec-path-from-shell-copy-env "TSICLIENT_TENANT_ID")
+      (exec-path-from-shell-copy-env "TSICLIENT_CLIENT_ID")
+      (exec-path-from-shell-copy-env "TSICLIENT_CLIENT_SECRET")
+      (exec-path-from-shell-copy-env "TSICLIENT_APPLICATION_NAME")
       (exec-path-from-shell-copy-env "VIRTUAL_ENV")
       (exec-path-from-shell-copy-env "LANG") ;; unsure
       (exec-path-from-shell-copy-env "LC_ALL") ;; unsure
@@ -827,17 +849,17 @@ Install reveal.js from [[https://github.com/hakimel/reveal.js/][here]]. Then, in
 [[https://www.emacswiki.org/emacs/PythonProgrammingInEmacs#toc30][More Information]]
 
 #+BEGIN_SRC emacs-lisp
-  (setq python-shell-interpreter "jupyter"
-        python-shell-interpreter-args "console --simple-prompt"
-        python-shell-prompt-detect-failure-warning nil)
+  ;; (setq python-shell-interpreter "jupyter"
+  ;;       python-shell-interpreter-args "console --simple-prompt"
+  ;;       python-shell-prompt-detect-failure-warning nil)
 
   ;; (setq python-shell-interpreter "ipython"
   ;;       python-shell-interpreter-args "--simple-prompt -i")
 
-  (defun my/add-python-shell-completion-native-disabled-interpreters ()
-    (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter"))
+  ;; (defun my/add-python-shell-completion-native-disabled-interpreters ()
+  ;;   (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter"))
 
-  (add-hook 'python-mode-hook 'my/add-python-shell-completion-native-disabled-interpreters)
+  ;; (add-hook 'python-mode-hook 'my/add-python-shell-completion-native-disabled-interpreters)
 #+END_SRC
 
 ** =conda=
@@ -877,7 +899,30 @@ The Emacs IPython Notebook (=EIN=) package provides a Jupyter Notebook client an
 [[https://carlfg.wordpress.com/2013/10/21/insert-shebang-extension-for-emacs/][More Information]]
 
 #+BEGIN_SRC emacs-lisp
-  (use-package insert-shebang)
+  ;; (use-package insert-shebang)
+#+END_SRC
+
+* Console
+** =vterm=
+
+Emacs-libvterm (vterm) is fully-fledged terminal emulator inside GNU Emacs based on libvterm.
+
+[[https://github.com/akermu/emacs-libvterm][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package vterm
+    :config
+    (defun my/vterm ()
+      "Always start emacs with vterm in at the bottom of the screen"
+      (interactive)
+      (delete-other-windows)
+      (split-window-vertically)
+      (other-window 1)
+      (minimize-window)
+      (enlarge-window 30)
+      (vterm)))
+    ;; :hook
+    ;; (emacs-startup . my/vterm))
 #+END_SRC
 
 * Added Functionality
@@ -982,6 +1027,7 @@ Rename open file and change buffer name as well
 
 #+BEGIN_SRC emacs-lisp
   (use-package google-this
+    :diminish
     :config
     (google-this-mode t))
 #+END_SRC
@@ -1038,9 +1084,23 @@ The =which-key= package automatically displays potential command information as 
 * Experimental
 
 #+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :bind
-    ("C-x g" . magit-status))
+   (use-package magit
+     :bind
+     ("C-x g" . magit-status))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package powerline
+    :config
+    (powerline-default-theme))
+
+  (use-package all-the-icons)
+
+  (use-package emojify
+    :hook
+    (after-init . global-emojify-mode))
+
+  (use-package mode-icons)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1054,6 +1114,7 @@ The =which-key= package automatically displays potential command information as 
     (setq TeX-PDF-mode t)
     (setq-default TeX-master nil))
 #+END_SRC
+** dumb-jump
 
 * Epilogue
 ** Sensible Garbage Collection Threshold
