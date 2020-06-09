@@ -5,3 +5,5 @@
 	helper = osxkeychain
 [core]
 	excludesfile = /Users/simenojensen/.gitignore
+[pull]
+	rebase = false
