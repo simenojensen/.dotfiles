@@ -155,7 +155,7 @@
   (global-hungry-delete-mode))
 
 (use-package projectile
-  :ensure t
+  :diminish
   :config
   (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
@@ -244,21 +244,11 @@
 (bind-key "M-0" 'my/text-scale-reset)
 
 (use-package exec-path-from-shell
-    :defer nil
-    :config
-    (exec-path-from-shell-initialize)
-    (exec-path-from-shell-copy-env "AIRTABLE_API_KEY")
-    (exec-path-from-shell-copy-env "TSICLIENT_ENVIRONMENT_NAME")
-    (exec-path-from-shell-copy-env "TSICLIENT_TENANT_ID")
-    (exec-path-from-shell-copy-env "TSICLIENT_CLIENT_ID")
-    (exec-path-from-shell-copy-env "TSICLIENT_CLIENT_SECRET")
-    (exec-path-from-shell-copy-env "TSICLIENT_APPLICATION_NAME")
-    (exec-path-from-shell-copy-env "VIRTUAL_ENV")
-    (exec-path-from-shell-copy-env "LANG") ;; unsure
-    (exec-path-from-shell-copy-env "LC_ALL") ;; unsure
-    (exec-path-from-shell-copy-env "LC_CTYPE") ;; unsure
-    )
-)
+  :defer nil
+  :config
+  (setq exec-path-from-shell-variables  '("PATH" "MANPATH" "AIRTABLE_API_KEY" "TSICLIENT_ENVIRONMENT_NAME" "TSICLIENT_TENANT_ID" "TSICLIENT_CLIENT_ID" "TSICLIENT_CLIENT_SECRET" "TSICLIENT_APPLICATION_NAME" "VIRTUAL_ENV" "LANG" "LC_ALL" "LC_CTYPE"))
+  (exec-path-from-shell-initialize))
+) ;; closing parenthesis
 
 ((eq system-type 'windows-nt))
 
@@ -461,7 +451,7 @@
   :hook
   (after-init . global-emojify-mode))
 
-(use-package mode-icons)
+;; (use-package mode-icons)
 
 (use-package tex-site
   :ensure auctex
