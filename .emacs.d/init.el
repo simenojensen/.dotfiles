@@ -329,8 +329,6 @@
   :config
   (setq ein:output-area-inlined-images t))
 
-;; (use-package insert-shebang)
-
 (use-package vterm
   :config
   (defun my/vterm ()
@@ -441,9 +439,13 @@
   :bind
   ("C-x g" . magit-status))
 
-(use-package powerline
-  :config
-  (powerline-default-theme))
+;; (use-package evil
+  ;; :config
+  ;; (evil-mode 1))
+
+;; (use-package powerline
+  ;; :config
+  ;; (powerline-default-theme))
 
 (use-package all-the-icons)
 

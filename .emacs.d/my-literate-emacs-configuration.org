@@ -63,7 +63,6 @@
   - [[#repl][REPL]]
   - [[#conda][=conda=]]
   - [[#ein][=ein=]]
-  - [[#insert-shebang][=insert-shebang=]]
 - [[#console][Console]]
   - [[#vterm][=vterm=]]
 - [[#added-functionality][Added Functionality]]
@@ -884,14 +883,6 @@ The Emacs IPython Notebook (=EIN=) package provides a Jupyter Notebook client an
     (setq ein:output-area-inlined-images t))
 #+END_SRC
 
-** =insert-shebang=
-
-[[https://carlfg.wordpress.com/2013/10/21/insert-shebang-extension-for-emacs/][More Information]]
-
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package insert-shebang)
-#+END_SRC
-
 * Console
 ** =vterm=
 
@@ -1080,9 +1071,13 @@ The =which-key= package automatically displays potential command information as 
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  (use-package powerline
-    :config
-    (powerline-default-theme))
+  ;; (use-package evil
+    ;; :config
+    ;; (evil-mode 1))
+
+  ;; (use-package powerline
+    ;; :config
+    ;; (powerline-default-theme))
 
   (use-package all-the-icons)
 
