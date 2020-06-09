@@ -50,6 +50,7 @@
   - [[#paren][=paren=]]
   - [[#beacon][=beacon=]]
   - [[#rainbow-delimiters][=rainbow-delimiters=]]
+  - [[#dimmerel][=dimmer.el=]]
 - [[#org-mode][Org-Mode]]
   - [[#org-mode-1][=org-mode=]]
   - [[#toc-org][=toc-org=]]
@@ -751,6 +752,16 @@ Highlight matching parenthesis.
       (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
 
+** =dimmer.el=
+
+[[https://github.com/gonewest818/dimmer.el][More Information]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package dimmer
+    :config
+    (setq dimmer-fraction 0.5)
+    (dimmer-mode t))
+#+END_SRC
 * Org-Mode
 ** =org-mode=
 
