@@ -1071,21 +1071,21 @@ The =which-key= package automatically displays potential command information as 
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package evil
-    ;; :config
-    ;; (evil-mode 1))
+  ;;  (use-package evil
+      ;; :config
+      ;; (evil-mode 1))
 
-  ;; (use-package powerline
-    ;; :config
-    ;; (powerline-default-theme))
+    ;; (use-package powerline
+      ;; :config
+      ;; (powerline-default-theme))
 
-  (use-package all-the-icons)
+    (use-package all-the-icons)
 
-  (use-package emojify
-    :hook
-    (after-init . global-emojify-mode))
+    (use-package emojify
+      :hook
+      (after-init . global-emojify-mode))
 
-  ;; (use-package mode-icons)
+    ;; (use-package mode-icons)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp

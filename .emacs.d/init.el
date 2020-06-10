@@ -439,21 +439,21 @@
   :bind
   ("C-x g" . magit-status))
 
-;; (use-package evil
-  ;; :config
-  ;; (evil-mode 1))
+;;  (use-package evil
+    ;; :config
+    ;; (evil-mode 1))
 
-;; (use-package powerline
-  ;; :config
-  ;; (powerline-default-theme))
+  ;; (use-package powerline
+    ;; :config
+    ;; (powerline-default-theme))
 
-(use-package all-the-icons)
+  (use-package all-the-icons)
 
-(use-package emojify
-  :hook
-  (after-init . global-emojify-mode))
+  (use-package emojify
+    :hook
+    (after-init . global-emojify-mode))
 
-;; (use-package mode-icons)
+  ;; (use-package mode-icons)
 
 (use-package tex-site
   :ensure auctex
