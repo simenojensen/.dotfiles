@@ -1,12 +1,4 @@
 channels:
-  - defaults
   - anaconda
   - conda-forge
-
-create_default_packages:
-  - python
-
-update_dependencies: true
-
-pip_interop_enabled: true
-report_errors: true
+  - defaults
