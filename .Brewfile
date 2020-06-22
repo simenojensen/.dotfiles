@@ -39,7 +39,7 @@ brew "go"
 brew "go-md2man"
 brew "pkg-config"
 brew "gobject-introspection"
-brew "grafana"
+brew "grafana", restart_service: true
 brew "htop"
 brew "imagemagick"
 brew "intltool"
@@ -82,7 +82,7 @@ brew "zsh-autosuggestions"
 brew "zsh-completions"
 brew "zsh-history-substring-search"
 brew "zsh-syntax-highlighting"
-brew "d12frosted/emacs-plus/emacs-plus@27", args: ["with-jansson", "with-xwidgets"]
+brew "d12frosted/emacs-plus/emacs-plus@27", args: ["HEAD", "with-jansson", "with-xwidgets"]
 brew "hivemq/mqtt-cli/mqtt-cli"
 cask "1password"
 cask "adobe-creative-cloud"
