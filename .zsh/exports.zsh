@@ -4,6 +4,14 @@ export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 # DocBook
 export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"
 
+# Emacs Shell
+# This allows running `shell` properly within Emacs
+if [ -n "$INSIDE_EMACS" ]; then
+  export TERM=dumb
+else
+  export TERM=xterm-256color
+fi
+
 # Findutils
 export PATH="/usr/local/opt/findutils/libexec/gnubin:$PATH"
 
@@ -54,6 +62,14 @@ PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 # For pkg-config to find libxml2 you may need to set:
 # export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
 
+# llvm
+# To use the bundled libc++ please add the following LDFLAGS:
+  # LDFLAGS="-L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib"
+export PATH="/usr/local/opt/llvm/bin:$PATH"
+# export LDFLAGS="-L/usr/local/opt/llvm/lib"
+# export CPPFLAGS="-I/usr/local/opt/llvm/include"
+
+
 # ncurses
 # export PATH="/usr/local/opt/ncurses/bin:$PATH"
 # For compilers to find ncurses you may need to set:
@@ -100,7 +116,7 @@ PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 # export PKG_CONFIG_PATH="/usr/local/opt/readline/lib/pkgconfig"
 
 # z
-. /usr/local/etc/profile.d/z.sh  
+. /usr/local/etc/profile.d/z.sh
 # export _Z_DATA="$HOME/.z-history/.z"
 
 # zsh-autosuggestions
@@ -134,3 +150,4 @@ fi
 unset __conda_setup
 conda activate py3
 # <<< conda initialize <<<
+export PATH="/usr/local/opt/texinfo/bin:$PATH"
