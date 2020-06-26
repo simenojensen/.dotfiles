@@ -38,7 +38,7 @@ brew "go"
 brew "go-md2man"
 brew "pkg-config"
 brew "gobject-introspection"
-brew "grafana", restart_service: true
+brew "grafana"
 brew "htop"
 brew "imagemagick"
 brew "intltool"
