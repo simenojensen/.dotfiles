@@ -1,3 +1,6 @@
+# Homebrew
+export HOMEBREW_CLEANUP_MAX_AGE_DAYS=2
+
 # Coreutils
 export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 
