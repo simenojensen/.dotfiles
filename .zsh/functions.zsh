@@ -9,6 +9,7 @@ function brewupdate() {
     brew upgrade
     brew cask upgrade
     brew cleanup
+    rm -rf "$(brew --cache)"
     brew bundle dump --global --force
 }
 
