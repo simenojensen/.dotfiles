@@ -8,6 +8,7 @@ function brewupdate() {
     brew update
     brew upgrade
     brew cask upgrade
+    brew cask upgrade $(brew cask outdated)
     brew cleanup
     rm -rf "$(brew --cache)"
     brew bundle dump --global --force
@@ -48,4 +49,3 @@ function compresspdf() { # Usage: compresspdf [input file] [output file] [screen
 function compressvid() { # Usage: compressvid [input file] [output file]
     ffmpeg -i "$1" -c:v libx264 -b:v 1.5M -c:a aac -b:a 128k "$2"
     }
-

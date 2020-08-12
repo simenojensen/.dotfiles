@@ -29,6 +29,8 @@ brew "doxygen"
 brew "emojify"
 brew "fd"
 brew "gnutls"
+brew "pkg-config"
+brew "gobject-introspection"
 brew "ffmpeg"
 brew "findutils"
 brew "git"
@@ -36,8 +38,6 @@ brew "gnu-sed"
 brew "gnuplot"
 brew "go"
 brew "go-md2man"
-brew "pkg-config"
-brew "gobject-introspection"
 brew "htop"
 brew "imagemagick"
 brew "intltool"
@@ -104,6 +104,7 @@ cask "kite"
 cask "lastpass"
 cask "macdown"
 cask "mactex-no-gui"
+cask "microsoft-auto-update"
 cask "microsoft-office"
 cask "microsoft-teams"
 cask "miniconda"
@@ -128,10 +129,4 @@ cask "webex-teams"
 cask "whatsapp"
 cask "wireshark"
 cask "wkhtmltopdf"
-mas "Harvest", id: 506189836
-mas "Jira", id: 1475897096
-mas "oModbusMaster", id: 490939034
-mas "ProtobufViewer", id: 1165908879
-mas "StuffIt Expander", id: 919269455
-mas "WireGuard", id: 1451685025
-mas "Xcode", id: 497799835
+cask "zoomus"
