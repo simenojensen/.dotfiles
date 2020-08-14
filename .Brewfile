@@ -7,7 +7,6 @@ tap "homebrew/cask-fonts"
 tap "homebrew/cask-versions"
 tap "homebrew/core"
 tap "homebrew/services"
-cask "xquartz"
 brew "ant"
 brew "asciidoctor"
 brew "aspell"
@@ -80,7 +79,6 @@ brew "zsh-autosuggestions"
 brew "zsh-completions"
 brew "zsh-history-substring-search"
 brew "zsh-syntax-highlighting"
-brew "d12frosted/emacs-plus/emacs-plus@27", args: ["HEAD", "with-jansson", "with-xwidgets"]
 brew "hivemq/mqtt-cli/mqtt-cli"
 cask "1password"
 cask "airtable"
@@ -96,6 +94,7 @@ cask "font-awesome-terminal-fonts"
 cask "font-fontawesome"
 cask "font-hack-nerd-font"
 cask "font-icomoon"
+cask "gemini"
 cask "google-chrome"
 cask "iterm2"
 cask "java"
@@ -129,4 +128,17 @@ cask "webex-teams"
 cask "whatsapp"
 cask "wireshark"
 cask "wkhtmltopdf"
+cask "xquartz"
 cask "zoomus"
+mas "GarageBand", id: 682658836
+mas "Harvest", id: 506189836
+mas "iMovie", id: 408981434
+mas "Jira", id: 1475897096
+mas "Keynote", id: 409183694
+mas "Numbers", id: 409203825
+mas "oModbusMaster", id: 490939034
+mas "Pages", id: 409201541
+mas "ProtobufViewer", id: 1165908879
+mas "StuffIt Expander", id: 919269455
+mas "WireGuard", id: 1451685025
+mas "Xcode", id: 497799835
