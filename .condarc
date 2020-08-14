@@ -1,4 +1,4 @@
 channels:
+  - defaults
   - anaconda
   - conda-forge
-  - defaults
