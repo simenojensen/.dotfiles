@@ -50,6 +50,7 @@ brew "llvm"
 brew "luarocks"
 brew "lynx"
 brew "mas"
+brew "mdbtools"
 brew "meson"
 brew "nasm"
 brew "nmap"
@@ -63,6 +64,7 @@ brew "ripgrep"
 brew "rust"
 brew "speedtest-cli"
 brew "sphinx-doc"
+brew "subversion"
 brew "telnet"
 brew "tesseract-lang"
 brew "texi2html"
@@ -93,11 +95,15 @@ cask "cleanmymac"
 cask "dotnet-sdk"
 cask "firefox"
 cask "font-awesome-terminal-fonts"
+cask "font-et-book"
 cask "font-fontawesome"
 cask "font-hack-nerd-font"
 cask "font-icomoon"
+cask "font-raleway"
+cask "font-raleway-dots"
 cask "gemini"
 cask "google-chrome"
+cask "google-earth-pro"
 cask "iterm2"
 cask "java"
 cask "jupyter-notebook-viewer"
@@ -140,6 +146,7 @@ mas "Harvest", id: 506189836
 mas "iMovie", id: 408981434
 mas "Jira", id: 1475897096
 mas "Keynote", id: 409183694
+mas "MDB Explorer", id: 506622388
 mas "Numbers", id: 409203825
 mas "oModbusMaster", id: 490939034
 mas "Pages", id: 409201541

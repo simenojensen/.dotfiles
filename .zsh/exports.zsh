@@ -24,6 +24,12 @@ export PATH="/usr/local/opt/gnu-getopt/bin:$PATH"
 # GNU sed
 PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 
+# apr
+# export PATH="/usr/local/opt/apr/bin:$PATH"
+
+# apr-util
+# export PATH="/usr/local/opt/apr-util/bin:$PATH"
+
 # icu4c
 # export PATH="/usr/local/opt/icu4c/bin:$PATH"
 # export PATH="/usr/local/opt/icu4c/sbin:$PATH"
@@ -117,6 +123,10 @@ export PATH="/usr/local/opt/llvm/bin:$PATH"
 # export CPPFLAGS="-I/usr/local/opt/readline/include"
 # For pkg-config to find readline you may need to set:
 # export PKG_CONFIG_PATH="/usr/local/opt/readline/lib/pkgconfig"
+
+# emacs pdftools pkg_config_path
+export PKG_CONFIG_PATH="/usr/local/Cellar/zlib/1.2.8/lib/pkgconfig:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig"
+
 
 # z
 . /usr/local/etc/profile.d/z.sh
