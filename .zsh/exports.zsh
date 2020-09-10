@@ -127,7 +127,6 @@ export PATH="/usr/local/opt/llvm/bin:$PATH"
 # emacs pdftools pkg_config_path
 export PKG_CONFIG_PATH="/usr/local/Cellar/zlib/1.2.8/lib/pkgconfig:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig"
 
-
 # z
 . /usr/local/etc/profile.d/z.sh
 # export _Z_DATA="$HOME/.z-history/.z"

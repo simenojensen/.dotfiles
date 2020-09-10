@@ -7,8 +7,8 @@ function macupdate() {
 function brewupdate() {
     brew update
     brew upgrade
-    brew cask upgrade
-    brew cask upgrade $(brew cask outdated)
+    brew upgrade --cask
+    brew upgrade --cask $(brew outdated --cask)
     brew cleanup
     rm -rf "$(brew --cache)"
     brew bundle dump --global --force
