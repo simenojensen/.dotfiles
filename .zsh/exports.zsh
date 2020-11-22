@@ -9,11 +9,11 @@ export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"
 
 # Emacs Shell
 # This allows running `shell` properly within Emacs
-if [ -n "$INSIDE_EMACS" ]; then
-  export TERM=dumb
-else
-  export TERM=xterm-256color
-fi
+# if [ -n "$INSIDE_EMACS" ]; then
+  # export TERM=dumb
+# else
+  # export TERM=xterm-256color
+# fi
 
 # Findutils
 export PATH="/usr/local/opt/findutils/libexec/gnubin:$PATH"
