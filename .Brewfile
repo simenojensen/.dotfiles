@@ -126,11 +126,11 @@ cask "miniconda"
 cask "nordvpn"
 cask "opera"
 cask "postico"
-cask "qlcolorcode"
 cask "qlimagesize"
 cask "qlmarkdown"
 cask "qlstephen"
 cask "qlvideo"
+cask "qt-design-studio"
 cask "quicklook-csv"
 cask "quicklook-json"
 cask "quicklookase"
@@ -148,3 +148,16 @@ cask "whatsapp"
 cask "wkhtmltopdf"
 cask "zoom"
 cask "zotero"
+mas "GarageBand", id: 682658836
+mas "Harvest", id: 506189836
+mas "iMovie", id: 408981434
+mas "Jira", id: 1475897096
+mas "Keynote", id: 409183694
+mas "MDB Explorer", id: 506622388
+mas "Numbers", id: 409203825
+mas "oModbusMaster", id: 490939034
+mas "Pages", id: 409201541
+mas "ProtobufViewer", id: 1165908879
+mas "StuffIt Expander", id: 919269455
+mas "WireGuard", id: 1451685025
+mas "Xcode", id: 497799835
