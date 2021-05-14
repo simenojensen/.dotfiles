@@ -13,6 +13,10 @@ alias ....="cd ../../.."
 alias .....="cd ../../../.."
 alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
+# emacs-libvterm
+# if [[ "$INSIDE_EMACS" = 'vterm' ]]; then
+    # alias clear='vterm_printf "51;Evterm-clear-scrollback";tput clear'
+# fi
 alias cl="clear"
 alias ccl="cd; clear"
 
@@ -32,7 +36,7 @@ alias reload="source ~/.zshrc"
 alias path='echo -e ${PATH//:/\\n}'
 
 # Lock the screen (when going AFK)
-alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
+alias afk="osascript -e 'tell application \"System Events\" to keystroke \"q\" using {command down,control down}'"
 
 # stop ping after 10 sends
 #alias ping='ping -c 10'

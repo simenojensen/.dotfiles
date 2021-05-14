@@ -1,8 +1,16 @@
 # Homebrew
 export HOMEBREW_CLEANUP_MAX_AGE_DAYS=2
 
+# Set LC types
+export LC_CTYPE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
 # Coreutils
 export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+
+# Go
+export GOPATH="$HOME/.go"
+export PATH="$PATH:$GOPATH"
 
 # DocBook
 export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"
@@ -14,6 +22,12 @@ export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"
 # else
   # export TERM=xterm-256color
 # fi
+
+# Perl
+# By default non-brewed cpan modules are installed to the Cellar. If you wish
+# for your modules to persist across updates we recommend using `local::lib`.
+# You can set that up like this:
+eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
 
 # Findutils
 export PATH="/usr/local/opt/findutils/libexec/gnubin:$PATH"
@@ -29,6 +43,10 @@ PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 
 # apr-util
 # export PATH="/usr/local/opt/apr-util/bin:$PATH"
+
+# m4
+export PATH="$PATH:/usr/local/opt/m4/bin"
+
 
 # icu4c
 # export PATH="/usr/local/opt/icu4c/bin:$PATH"
@@ -124,8 +142,26 @@ export PATH="/usr/local/opt/llvm/bin:$PATH"
 # For pkg-config to find readline you may need to set:
 # export PKG_CONFIG_PATH="/usr/local/opt/readline/lib/pkgconfig"
 
+# ruby
+export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+export GEM_HOME="$HOME/.gem"
+
+# CSV diff
+export PATH="$HOME/.gem/bin/:$PATH"
+
 # emacs pdftools pkg_config_path
 export PKG_CONFIG_PATH="/usr/local/Cellar/zlib/1.2.8/lib/pkgconfig:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig"
+
+# Iccube
+export ICCUBE_HOME="/Volumes/icCube_6.8.5/"
+
+# mysql
+# https://bugs.mysql.com/bug.php?id=102364
+# This is my temporary solution:
+# MySQLWorkbench need Python3.7 Framework in /Library/Frameworks/
+# 1. brew install python@3.7
+# 2. sudo cp -r /usr/local/Cellar/python@3.7/3.7.9_3/Frameworks/Python.framework /Library/Frameworks/Python.framework
+# 3. open MySQLWorkbench, it's work
 
 # z
 . /usr/local/etc/profile.d/z.sh

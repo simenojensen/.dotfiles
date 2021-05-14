@@ -2,3 +2,4 @@ channels:
   - defaults
   - anaconda
   - conda-forge
+pip_interop_enabled: true

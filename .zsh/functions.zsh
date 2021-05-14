@@ -50,7 +50,6 @@ function compressvid() { # Usage: compressvid [input file] [output file]
     ffmpeg -i "$1" -c:v libx264 -b:v 1.5M -c:a aac -b:a 128k "$2"
     }
 
-
 # vterm emacs
 vterm_printf(){
     if [ -n "$TMUX" ]; then
