@@ -449,6 +449,9 @@ defaults write com.apple.dock expose-animation-duration -float 0.1
 # (i.e. use the old Exposé behavior instead)
 defaults write com.apple.dock expose-group-by-app -bool false
 
+# Show app switcher on all monitor displays
+defaults write com.apple.Dock appswitcher-all-displays -bool true
+
 # Disable Dashboard
 defaults write com.apple.dashboard mcx-disabled -bool true
 
@@ -861,4 +864,3 @@ echo "Done. Note that some of these changes require a logout/restart to take eff
 ###
 stop_sudo
 ###
-

@@ -40,6 +40,11 @@ function sortcat(){
     grep . $1 | sort
 }
 
+# Usage: flatten_dir [DIRECTORY]
+function flatten_dir(){
+    find $1 -mindepth 2 -type f -exec mv -i '{}' $1 ';'
+}
+
 
 function compresspdf() { # Usage: compresspdf [input file] [output file] [screen*|ebook|printer|prepress]
     gs -sDEVICE=pdfwrite -dNOPAUSE -dQUIET -dBATCH -dPDFSETTINGS=/${3:-"ebook"} -dCompatibilityLevel=1.4 -sOutputFile="$2" "$1"
