@@ -1,0 +1,6 @@
+channels:
+  - conda-forge
+  - defaults
+  - anaconda
+  - http://conda.anaconda.org/gurobi
+pip_interop_enabled: true

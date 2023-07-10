@@ -1,0 +1,18 @@
+[user]
+	name = Simen Omholt-Jensen
+	email = simen@omholt-jensen.com
+[credential]
+	helper = osxkeychain
+[core]
+	excludesfile = /Users/simenojensen/.gitignore
+[pull]
+	rebase = false
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+[init]
+	defaultBranch = main
