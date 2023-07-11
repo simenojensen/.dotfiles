@@ -1,5 +1,5 @@
 # Manage dotfiles with git bare repository
-alias dotfiles="git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
+alias dotfiles="git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
 alias dstatus="dotfiles status"
 alias dadd="dotfiles add"
 alias dcommit="dotfiles commit -m"

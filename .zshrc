@@ -80,5 +80,4 @@ source $ZSH/oh-my-zsh.sh
 source $ZSH_CUSTOM/aliases.zsh
 source $ZSH_CUSTOM/exports.zsh
 source $ZSH_CUSTOM/functions.zsh
-source ~/.app.zsh 
-
+source ~/.app.zsh
